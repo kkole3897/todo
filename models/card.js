@@ -47,6 +47,24 @@ function updateCardDescription(card_id, description) {
     });
 }
 
+
+function addCard(list_id, description) {
+    return new Promise((resolve, reject) => {
+        pool.query(
+            `INSERT INTO Card(list_id, description, removed)
+            VALUES(?, ?, 0)`,
+            [list_id, description],
+            (err, results, fields) => {
+                try {
+                    resolve(results);
+                } catch {
+                    reject(err);
+                }
+            }
+        );
+    });
+}
+
 module.exports = {
     getCardsByUserId,
     updateCardDescription
