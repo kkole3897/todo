@@ -24,6 +24,23 @@ function findUserById(id) {
     })
 }
 
+function insertUserId(id) {
+    return new Promise((resolve, reject) => {
+        pool.query(
+            'INSERT INTO User VALUES(?)',
+            [id],
+            (err, results, fields) => {
+                try {
+                    resolve(results);
+                } catch {
+                    reject(err);
+                }
+            }
+        )
+    })
+}
+
 module.exports = {
-    findUserById
+    findUserById,
+    insertUserId
 };
