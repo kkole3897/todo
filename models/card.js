@@ -10,14 +10,14 @@ const pool = mysql.createPool({
     queueLimit: 0
 });
 
-function getCardsByUserId(id) {
+function getCardsByUserId(userId) {
     return new Promise((resolve, reject) => {
         pool.query(
             `SELECT List.list_id, title, card_id, description
             FROM User NATURAL JOIN List JOIN Card
             ON List.list_id = Card.list_id
             WHERE user_id = ? AND List.removed = 0 AND Card.removed = 0;`,
-            [id],
+            [userId],
             (err, results, fields) => {
                 try {
                     resolve(results);
@@ -29,13 +29,13 @@ function getCardsByUserId(id) {
     });
 }
 
-function updateCardDescription(card_id, description) {
+function updateCardDescription(cardId, description) {
     return new Promise((resolve, reject) => {
         pool.query(
             `UPDATE Card
             SET description = ?
-            WHERE card_id = ?`,
-            [description, card_id],
+            WHERE card_id = ?;`,
+            [description, cardId],
             (err, results, fields) => {
                 try {
                     resolve(results);
@@ -48,12 +48,12 @@ function updateCardDescription(card_id, description) {
 }
 
 
-function addCard(list_id, description) {
+function addCard(listId, description) {
     return new Promise((resolve, reject) => {
         pool.query(
             `INSERT INTO Card(list_id, description, removed)
-            VALUES(?, ?, 0)`,
-            [list_id, description],
+            VALUES(?, ?, 0);`,
+            [listId, description],
             (err, results, fields) => {
                 try {
                     resolve(results);
@@ -65,13 +65,31 @@ function addCard(list_id, description) {
     });
 }
 
-function removeCard(card_id) {
+function removeCard(cardId) {
     return new Promise((resolve, reject) => {
         pool.query(
             `UPDATE Card
             SET removed = 1
-            WHERE card_id = ?`,
-            [card_id],
+            WHERE card_id = ?;`,
+            [cardId],
+            (err, results, fields) => {
+                try {
+                    resolve(results);
+                } catch {
+                    reject(err);
+                }
+            }
+        );
+    });
+}
+
+function changeIncludedList(cardId, newListId) {
+    return new Promise((resolve, reject) => {
+        pool.query(
+            `UPDATE Card
+            SET list_id = ?
+            WHERE card_id = ? AND removed = 0;`,
+            [newListId, cardId],
             (err, results, fields) => {
                 try {
                     resolve(results);
@@ -87,5 +105,6 @@ module.exports = {
     getCardsByUserId,
     updateCardDescription,
     addCard,
-    removeCard
+    removeCard,
+    changeIncludedList
 };
