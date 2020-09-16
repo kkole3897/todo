@@ -29,6 +29,25 @@ function getCardsByUserId(id) {
     });
 }
 
+function updateCardDescription(card_id, description) {
+    return new Promise((resolve, reject) => {
+        pool.query(
+            `UPDATE Card
+            SET description = ?
+            WHERE card_id = ?`,
+            [description, card_id],
+            (err, results, fields) => {
+                try {
+                    resolve(results);
+                } catch {
+                    reject(err);
+                }
+            }
+        );
+    });
+}
+
 module.exports = {
-    getCardsByUserId
+    getCardsByUserId,
+    updateCardDescription
 };
