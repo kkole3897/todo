@@ -65,7 +65,27 @@ function addCard(list_id, description) {
     });
 }
 
+function removeCard(card_id) {
+    return new Promise((resolve, reject) => {
+        pool.query(
+            `UPDATE Card
+            SET removed = 1
+            WHERE card_id = ?`,
+            [card_id],
+            (err, results, fields) => {
+                try {
+                    resolve(results);
+                } catch {
+                    reject(err);
+                }
+            }
+        );
+    });
+}
+
 module.exports = {
     getCardsByUserId,
-    updateCardDescription
+    updateCardDescription,
+    addCard,
+    removeCard
 };
