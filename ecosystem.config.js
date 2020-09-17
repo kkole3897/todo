@@ -9,6 +9,7 @@ module.exports = {
         autorestart: true, // 프로세스 실패 시 자동으로 재시작할지 선택
         watch: false, // 파일이 변경되었을 때 재시작 할지 선택
         max_memory_restart: "512M", // 프로그램의 메모리 크기가 일정 크기 이상이 되면 재시작한다.
+        node_args: '-r dotenv/config',
         env: {
           // 개발 환경설정
           port: 8080,
