@@ -10,6 +10,7 @@
 프로젝트를 진행하면서 생성되는 모든 문서는 다음 notion 링크에서 확인할 수 있다.
 - [요구사항](https://www.notion.so/kkole3897/dc4fa9c833d3405bb07637bbd9696204)
 - [로드맵](https://www.notion.so/kkole3897/b459f2157bce42f99dcb9ff09253767c?v=194ca07169704d90b3c4532bc4b42d0f)
+- [테이블 스키마](https://www.notion.so/kkole3897/DB-71cd55ad486b42438c75ba452f723941)
 
 ## 프로젝트 진행 과정
 
