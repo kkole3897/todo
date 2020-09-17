@@ -1,9 +1,9 @@
 const mysql = require('mysql2');
 
 const pool = mysql.createPool({
-    host: '101.101.208.162',
-    user: 'kjk',
-    password: 'lodnKjk3897!',
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
     database: 'todo',
     waitForConnections: true,
     connectionLimit: 10,
