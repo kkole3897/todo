@@ -22,6 +22,33 @@
 - 개발 환경 구축
   - express-generator로 express 구조 생성
 
+### DAY2
+
+- pm2로 배포 자동화 설정
+- 클라우드 서버 mysql 비밀번호 오류로 클라우드 서버 반납 후 다시 설정
+- [테이블 스키마](https://www.notion.so/kkole3897/DB-71cd55ad486b42438c75ba452f723941) 설계, 테이블 생성
+  - User
+  - List
+  - Card
+  - Log
+
+### DAY3
+
+- 로그인 기능 구현
+  - express-session 모듈 사용
+- Card 테이블 접근 기능 구현, 모듈화(models/card.js)
+
+### DAY4
+
+- Card 데이터를 조작하는 api 구현
+  - Rest 원칙 적용하려고 했지만 업데이트 필요
+  - 카드 생성
+  - 카드 내용 수정
+  - 카드 삭제
+  - 카드 이동
+- Postman으로 api 테스트
+- dotenv 모듈로 DB 접속 정보 별도로 관리
+
 ## Author
 
 **김진관**
