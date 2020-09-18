@@ -101,10 +101,29 @@ function changeIncludedList(cardId, newListId) {
     });
 }
 
+function updateAllValues(cardId, listId, description, removed) {
+    return new Promise((resolve, reject) => {
+        pool.query(
+            `UPDATE Card
+            SET (list_id, description, removed) = (?, ?, ?)
+            WHERE card_id = ?;`,
+            [listId, description, removed, cardId],
+            (err, results, fields) => {
+                try {
+                    resolve(results);
+                } catch {
+                    reject(err);
+                }
+            }
+        );
+    });
+}
+
 module.exports = {
     getCardsByUserId,
     updateCardDescription,
     addCard,
     removeCard,
-    changeIncludedList
+    changeIncludedList,
+    updateAllValues
 };
