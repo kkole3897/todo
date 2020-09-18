@@ -26,7 +26,11 @@ router.get('/', (req, res, next) => {
     const description = req.body.description;
     const removed = req.body.removed;
 
-    card.updateCardDescription(cardId, listId, description, removed).then((results) => {
+    console.log(cardId);
+    console.log(listId);
+    console.log(description);
+    console.log(removed);
+    card.updateAllValues(cardId, listId, description, removed).then((results) => {
         res.send('업데이트 성공');
     }).catch((err) => {
         res.send('업데이트 실패');
