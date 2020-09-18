@@ -20,31 +20,21 @@ router.get('/', (req, res, next) => {
     }).catch((err) => {
         res.send('카드 추가 실패');
     });
-}).patch('/', (req, res, next) => {
+}).put('/', (req, res, next) => {
     const cardId = req.body.cardId;
-    const work = req.body.work;
     const listId = req.body.listId;
     const description = req.body.description;
+    const removed = req.body.removed;
 
-    if (work === 'change') {
-        card.updateCardDescription(cardId, description).then((results) => {
-            res.send('카드 내용 수정 성공');
-        }).catch((err) => {
-            res.send('카드 내용 수정 실패');
-        });
-    } else if (work === 'move') {
-        card.changeIncludedList(cardId, listId).then((results) => {
-            res.send('카드 이동 성공');
-        }).catch((err) => {
-            res.send('카드 이동 실패');
-        });
-    } else if (work === 'remove') {
-        card.removeCard(cardId).then((results) => {
-            res.send('카드 삭제 성공');
-        }).catch((err) => {
-            res.send('카드 삭제 실패');
-        })
-    }
-})
+    console.log(cardId);
+    console.log(listId);
+    console.log(description);
+    console.log(removed);
+    card.updateAllValues(cardId, listId, description, removed).then((results) => {
+        res.send('업데이트 성공');
+    }).catch((err) => {
+        res.send('업데이트 실패');
+    });
+});
 
 module.exports = router;
