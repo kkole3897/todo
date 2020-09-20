@@ -16,7 +16,8 @@ function getCardsByUserId(userId) {
             `SELECT List.list_id, title, card_id, description
             FROM User NATURAL JOIN List JOIN Card
             ON List.list_id = Card.list_id
-            WHERE user_id = ? AND List.removed = 0 AND Card.removed = 0;`,
+            WHERE user_id = ? AND List.removed = 0 AND Card.removed = 0
+            ORDER BY List.list_id;`,
             [userId],
             (err, results, fields) => {
                 try {
