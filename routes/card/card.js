@@ -4,7 +4,8 @@ const card = models.card;
 function getCards(req, res, next) {
     const userId = req.session.userId;
     card.getCardsByUserId(userId).then((results) => {
-        res.send({status: 'ok', message: '카드 데이터를 불러왔습니다.'});
+        
+        res.send({status: 'ok', message: '카드 데이터를 불러왔습니다.', data: results});
     }).catch((err) => {
         res.send({status: 'fail', message: '카드 데이터를 불러오지 못했습니다.'});
     });
