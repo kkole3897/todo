@@ -28,7 +28,24 @@ function getLogsByUserId(userId) {
     });
 }
 
-module.exports = {
-    getLogsByUserId
-};
+function addLog(userId, action, cardDescription, fromTitle, toTitle) {
+    return new Promise((resolve, reject) => {
+        pool.query(
+            'INSERT INTO Log(user_id, `action`, card_description, from_title, to_title) \
+            VALUES(?, ?, ?, ?, ?);',
+            [userId, action, cardDescription, fromTitle, toTitle],
+            (err, results, fields) => {
+                try {
+                    resolve(results);
+                } catch {
+                    reject(err);
+                }
+            }
+        )
+    })
+}
 
+module.exports = {
+    getLogsByUserId,
+    addLog
+};
