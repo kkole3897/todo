@@ -17,9 +17,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(session({
-    secret: 'ambc@!vsmkv#!&*!#EDNAnsv#!$()_*#@',
-    resave: true,
-    saveUninitialized: false
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true
 }));
 
 app.all('/*', function (req, res, next) {
