@@ -6,7 +6,7 @@ module.exports = {
   entry: './src/index.js',
   output: {
     filename: 'main.js',
-    path: path.resolve(__dirname, '../../server/public')
+    path: path.resolve(__dirname, '../server/public')
   },
   devServer: {
       port: 8080,
@@ -16,12 +16,9 @@ module.exports = {
       rules: [
           {
               test: /\.js$/,
-              exclude: 'node_modules',
+              exclude: /node_modules/,
               use: {
                   loader: 'babel-loader',
-                  options: {
-                      presets: ['env']
-                  }
               }
           },
           {
