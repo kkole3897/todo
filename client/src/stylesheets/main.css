@@ -17,7 +17,7 @@
 }
 
 .todo-list__inner {
-    padding: .5rem .5rem .5rem .5rem;
+    padding: .8rem;
 }
 
 .todo-list__header {
@@ -28,8 +28,28 @@
 
 .todo-list__header--left {
     display: flex;
+    align-items: center;
 }
 
 .todo-list__card-number {
-    margin: 0 .3rem 0 0;
+    margin: 0 .4rem 0 0;
+}
+
+.todo-list__card-number--draw-shape {
+    padding: .1rem .4rem .2rem .4rem;
+    border-radius: 50%;
+    background-color: #D0D2D4;
+}
+
+.todo-list__header--right {
+    display: flex;
+    align-items: center;
+}
+
+.todo-list__button-img {
+    width: .9rem;
+}
+
+.todo-list__button-img--margin-right {
+    margin: 0 .5rem 0 0;
 }
