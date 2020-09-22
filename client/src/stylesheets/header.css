@@ -1,0 +1,16 @@
+.header {
+    width: 100%;
+    background-color: black;
+    color: white;
+}
+
+.header__container {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.7rem 1.2rem 0.7rem 1.2rem;
+}
+
+.header__title--font-grow {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
