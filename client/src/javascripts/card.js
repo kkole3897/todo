@@ -1,8 +1,8 @@
 function renderCardInput(target) {
     const cardInputForm = `
         <div class="card-input">
-            <form method="post">
-                <textarea name="description" type="text" placeholder="Enter a note">
+            <form action="#" method="post">
+                <textarea name="description" type="text" placeholder="Enter a note"></textarea>
                 <input type="submit" value="Add">
                 <input type="button", value="Cancel">
             </form>
