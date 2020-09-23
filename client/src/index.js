@@ -10,13 +10,13 @@ fetch('http://localhost:3000/auth/login', {
     }),
     headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Headers': 'X-Requested-With"',
+        'Access-Control-Allow-Headers': '*',
         'Access-Control-Allow-Origin': '*',
         'Origin': 'http://localhost:8080'
     }
 })
 .then(res => res.json())
 .then(res => new ListView().getList())
-.catch(err => console.error('ERROR'));
+.catch(err => console.error(err));
 
 addOpenCardInputEvent();
