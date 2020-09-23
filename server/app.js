@@ -4,9 +4,9 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const session = require('express-session');
 
-const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 const cardRouter = require('./routes/card');
+const listRouter = require('./routes/list');
 
 const app = express();
 
@@ -28,9 +28,9 @@ app.all('/*', function (req, res, next) {
     next();
 });
 
-app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/card', cardRouter);
+app.use('/list', listRouter);
 
 app.use((req, res, next) => {
     res.status(404).send('Page Not Found');
