@@ -10,12 +10,16 @@ const pool = mysql.createPool({
     queueLimit: 0
 });
 
-function getList(userId) {
+function getLists(userId) {
     return new Promise((resolve, reject) => {
         pool.query(
-            `SELECT list_id, title
-            FROM List
-            WHERE user_id = ?`,
+            `SELECT List.list_id, title, count(Card.card_id) as count
+            FROM List LEFT OUTER JOIN (
+                SELECT * FROM Card WHERE removed = 0
+            ) as Card
+            ON List.list_id = Card.list_id
+            WHERE user_id = ?
+            GROUP BY List.list_id;`,
             [userId],
             (err, results, fields) => {
                 try {
@@ -45,6 +49,6 @@ function addList(userId, title) {
 }
 
 module.exports = {
-    getList,
+    getLists,
     addList
 };
