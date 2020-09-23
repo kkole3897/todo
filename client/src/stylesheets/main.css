@@ -46,10 +46,23 @@
     align-items: center;
 }
 
-.todo-list__button-img {
-    width: .9rem;
+.todo-list__button {
+    border: none;
 }
 
-.todo-list__button-img--margin-right {
-    margin: 0 .5rem 0 0;
+.todo-list__button:hover,
+.todo-list__button:focus {
+    fill: #0366D6;
+}
+
+.todo-list__button--margin-left {
+    margin: 0 0 0 .2rem;
+}
+
+.todo-list__add-icon--width {
+    width: 0.8rem;
+}
+
+.todo-list__remove-icon--width {
+    width: 0.7rem;
 }
