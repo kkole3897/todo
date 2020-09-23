@@ -9,7 +9,7 @@ const user = models.user;
 */
 router.post('/', (req, res, next) => {
     if(req.session.isLogined) {
-        res.send('이미 로그인된 상태');
+        res.send({status: 'ok', message: '이미 로그인된 상태입니다.'});
         return;
     }
 
@@ -21,14 +21,14 @@ router.post('/', (req, res, next) => {
                 console.log(`${id} Insert Success`);
             }).catch((err) => {
                 console.log(`${id} Insert Fail`);
-                res.status(401).send('로그인 실패');
+                res.status(401).send({status: 'fail', message: '로그인 실패'});
             });
         }
         req.session.userId = id;
         req.session.isLogined = true;
-        res.json({user_id: id, isLogined: true});
+        res.json({status: 'ok', userId: id, isLogined: true});
     }).catch((err) => {
-        res.status(401).send('로그인 실패');
+        res.status(401).send({status: 'fail', message: '로그인 실패'});
     });  
 });
 
