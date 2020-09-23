@@ -10,6 +10,24 @@ const pool = mysql.createPool({
     queueLimit: 0
 });
 
+function getList(userId) {
+    return new Promise((resolve, reject) => {
+        pool.query(
+            `SELECT list_id, title
+            FROM List
+            WHERE user_id = ?`,
+            [userId],
+            (err, results, fields) => {
+                try {
+                    resolve(results);
+                } catch {
+                    reject(err);
+                }
+            }
+        );
+    });
+}
+
 function addList(userId, title) {
     return new Promise((resolve, reject) => {
         pool.query(
@@ -27,5 +45,6 @@ function addList(userId, title) {
 }
 
 module.exports = {
+    getList,
     addList
 };
