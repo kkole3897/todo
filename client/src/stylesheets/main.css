@@ -66,3 +66,47 @@
 .todo-list__remove-icon--width {
     width: 0.7rem;
 }
+
+.card--margin {
+    margin: .5rem 0 .5rem 0;
+}
+
+.card__container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.card__container--padding {
+    padding: .5rem;
+}
+
+.card__contiainer--background {
+    border: 1.5px solid #E7E9EB;
+    border-radius: 4px;
+    background-color: white;
+}
+
+.card__content {
+    display: flex;
+}
+
+.card__logo {
+    width: 0.8rem;
+}
+
+.card__description--margin {
+    margin: 0 0 0 .5rem;
+}
+
+.card__remove-button {
+    align-self: flex-end;
+}
+
+.card__remove-button--background {
+    border: none;
+    background-color: Transparent;
+}
+
+.card__remove-button-icon {
+    width: .5rem;
+}

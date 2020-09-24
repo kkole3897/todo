@@ -1,6 +1,6 @@
 class ListView {
     getList(userId) {
-        fetch(`http://localhost:3000/list`, {
+        return fetch(`http://localhost:3000/list`, {
             method: 'GET',
             mode: 'cors'
         })
