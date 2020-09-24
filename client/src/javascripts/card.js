@@ -36,6 +36,7 @@ function addRemoveCardEvent() {
     const todoListBodies = document.querySelectorAll('.todo-list__body');
     todoListBodies.forEach(todoListBody => {
         todoListBody.addEventListener('click', (e) => {
+            if(!e.target.closest('.card__remove-button')) return;
             const elCard = e.target.closest('.card--margin');
             const elList = e.target.closest('.todo-list');
             const body = {
