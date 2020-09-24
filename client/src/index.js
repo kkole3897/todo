@@ -2,7 +2,7 @@ import './stylesheets/style.css';
 
 import './images/card_logo.png'
 
-import { addOpenCardInputEvent } from './javascripts/card.js';
+import { addOpenCardInputEvent, addRemoveCardEvent } from './javascripts/card.js';
 import ListView from './javascripts/listview.js';
 import CardView from './javascripts/cardview.js';
 
@@ -26,3 +26,4 @@ fetch('http://localhost:3000/auth/login', {
 .catch(err => console.error(err));
 
 addOpenCardInputEvent();
+addRemoveCardEvent();

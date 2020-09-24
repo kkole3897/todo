@@ -1,7 +1,7 @@
 function renderCardInput(target) {
     const cardInputForm = `
         <div class="card-input">
-            <form action="#" method="post">
+            <form class="card-input__form" action="#" method="post">
                 <textarea name="description" type="text" placeholder="Enter a note"></textarea>
                 <input type="submit" value="Add">
                 <input type="button", value="Cancel">
@@ -32,4 +32,36 @@ function addOpenCardInputEvent() {
     });
 }
 
-export { addOpenCardInputEvent }
+function addRemoveCardEvent() {
+    const todoListBodies = document.querySelectorAll('.todo-list__body');
+    todoListBodies.forEach(todoListBody => {
+        todoListBody.addEventListener('click', (e) => {
+            const elCard = e.target.closest('.card--margin');
+            const elList = e.target.closest('.todo-list');
+            const body = {
+                cardId: elCard.getAttribute('data-card-id'),
+                listId: elList.getAttribute('data-list-id'),
+                description: elCard.querySelector('.card__description--margin').textContent.trim()
+            }
+            fetchRemoveCard(body);
+            elCard.parentNode.removeChild(elCard);
+        })
+    })
+}
+
+function fetchRemoveCard({cardId, listId, description}) {
+    return fetch('http://localhost:3000/card', {
+        method: 'PUT',
+        body: JSON.stringify({
+            cardId: cardId,
+            listId: listId,
+            description: description,
+            removed: 1
+        }),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+}
+
+export { addOpenCardInputEvent, addRemoveCardEvent }
