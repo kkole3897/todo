@@ -46,6 +46,10 @@ function addRemoveCardEvent() {
             }
             fetchRemoveCard(body);
             elCard.parentNode.removeChild(elCard);
+            const elCount = elList.querySelector('.todo-list__card-number--draw-shape');
+            if (parseInt(elCount.textContent) > 0) {
+                elCount.textContent = parseInt(elCount.textContent) - 1;
+            }
         })
     })
 }
