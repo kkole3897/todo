@@ -2,10 +2,11 @@ import './stylesheets/style.css';
 
 import './images/card_logo.png'
 
-import { addOpenCardInputEvent, addRemoveCardEvent } from './javascripts/card.js';
+import { addRemoveCardEvent } from './javascripts/card.js';
 import ListView from './javascripts/listview.js';
 import CardView from './javascripts/cardview.js';
 
+const listView = new ListView();
 
 fetch('http://localhost:3000/auth/login', {
     method: 'POST',
@@ -21,9 +22,10 @@ fetch('http://localhost:3000/auth/login', {
     }
 })
 .then(res => res.json())
-.then(async res => await new ListView().getList())
+.then(async res => await listView.getList())
 .then(async res => await new CardView().getCards())
 .catch(err => console.error(err));
 
-addOpenCardInputEvent();
+listView.addOpenCardInputEvent();
+
 addRemoveCardEvent();

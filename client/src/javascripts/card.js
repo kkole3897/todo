@@ -1,41 +1,3 @@
-function renderCardInput(target) {
-    const cardInputForm = `
-        <div class="card-input">
-            <form class="card-input__form" action="#" method="post">
-                <div>
-                    <textarea class="card-input__textarea" name="description" type="text" placeholder="Enter a note"></textarea>
-                </div>
-                <div class="card-input__button-container">
-                    <input class="card-input__button card-input__button--margin-right card-input__button--green" type="submit" value="Add">
-                    <input class="card-input__button card-input__button--light-gray" type="button", value="Cancel">
-                </div>
-            </form>
-        </div>
-        `;
-    target.insertAdjacentHTML('afterend', cardInputForm);
-}
-
-function hideCardInput(target) {
-    target.parentNode.removeChild(target.nextElementSibling);
-}
-
-function addOpenCardInputEvent() {
-    const icons = document.querySelectorAll('.todo-list__add-icon--width');
-    icons.forEach(icon => {
-        const btn = icon.parentNode;
-        const target = btn.closest('.todo-list__header');
-        btn.addEventListener('click', () => {
-            if (btn.getAttribute('aria-expand') === 'true') {
-                btn.setAttribute('aria-expand', 'false');
-                hideCardInput(target);
-            } else {
-                btn.setAttribute('aria-expand', 'true');
-                renderCardInput(target);
-            }
-        });
-    });
-}
-
 function addRemoveCardEvent() {
     const todoListBodies = document.querySelectorAll('.todo-list__body');
     todoListBodies.forEach(todoListBody => {
@@ -73,4 +35,4 @@ function fetchRemoveCard({cardId, listId, description}) {
     })
 }
 
-export { addOpenCardInputEvent, addRemoveCardEvent }
+export { addRemoveCardEvent }
