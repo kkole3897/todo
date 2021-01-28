@@ -1,5 +1,7 @@
 import './Card.css';
+
 import MoreIcon from '../assets/more.svg';
+import NoteIcon from '../assets/note.svg';
 
 function Card({ content }) {
   const $card = document.createElement('div');
@@ -10,6 +12,7 @@ function Card({ content }) {
 
   const $cardIcon = document.createElement('div');
   $cardIcon.className = 'card__icon';
+  $cardIcon.innerHTML = `<img src='${NoteIcon}' />`;
 
   const $cardBody = document.createElement('div');
   $cardBody.className = 'card__body';
