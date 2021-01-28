@@ -33,7 +33,8 @@
 }
 
 .card__body--author {
-  margin: 8px 0 0 0;
+  margin: 12px 0 0 0;
+  font-size: 12px;
 }
 
 .card__delete-button {
