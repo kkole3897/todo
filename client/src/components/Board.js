@@ -26,7 +26,8 @@ function Board({ title = '' }) {
 
   const $cardCount = document.createElement('div');
   $cardCount.className = 'board__card-count';
-  $cardCount.innerHTML = 0;
+  let count = 0;
+  $cardCount.innerHTML = count;
 
   const $title = document.createElement('div');
   $title.className = 'board__title board__title--ml';
@@ -39,6 +40,7 @@ function Board({ title = '' }) {
 
   let isAddCardFormOpened = false;
   const clickPlusButtonHandler = event => {
+    console.log('click plus');
     if (isAddCardFormOpened) {
       $addCardForm.remove();
     } else {
@@ -60,8 +62,11 @@ function Board({ title = '' }) {
   const clickAddButtonHandler = event => {
     event.preventDefault();
     const cardText = $textArea.value;
+    $textArea.value = '';
     const $card = document.createElement('div');
     $card.innerHTML = cardText;
+    count += 1;
+    $cardCount.innerHTML = count;
     $addCardForm.remove();
     $boardBody.appendChild($card);
   };
