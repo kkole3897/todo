@@ -33,8 +33,14 @@ function Board({ title = '' }) {
     'board__add-card-button board__add-card-button--mr';
   $addCardButton.innerHTML = `<img src=${PlusIcon} />`;
 
+  let isAddCardFormOpened = false;
   const clickPlusButtonHandler = event => {
-    event.target.closest('.board__inner').appendChild($addCardForm);
+    if (isAddCardFormOpened) {
+      $addCardForm.remove();
+    } else {
+      event.target.closest('.board__inner').appendChild($addCardForm);
+    }
+    isAddCardFormOpened = !isAddCardFormOpened;
   };
 
   $addCardButton.addEventListener('click', clickPlusButtonHandler);
