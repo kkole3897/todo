@@ -66,6 +66,7 @@ function Board({ title = '' }) {
     const $card = document.createElement('div');
     $card.innerHTML = cardText;
     count += 1;
+    isAddCardFormOpened = !isAddCardFormOpened;
     $cardCount.innerHTML = count;
     $addCardForm.remove();
     $boardBody.appendChild($card);
