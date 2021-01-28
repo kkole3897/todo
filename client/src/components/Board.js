@@ -1,4 +1,5 @@
 import './Board.css';
+
 import PlusIcon from '../assets/plus.svg';
 import MoreIcon from '../assets/more.svg';
 
@@ -13,6 +14,9 @@ function Board({ title = '' }) {
 
   const $boardHeader = document.createElement('div');
   $boardHeader.className = 'board__header';
+
+  const $boardBody = document.createElement('div');
+  $boardBody.className = 'board__body';
 
   const $leftDiv = document.createElement('div');
   $leftDiv.className = 'flex';
@@ -49,7 +53,23 @@ function Board({ title = '' }) {
   $moreButton.className = 'board__more-button';
   $moreButton.innerHTML = `<img src=${MoreIcon} />`;
 
-  const $addCardForm = AddCardForm();
+  const $textArea = document.createElement('textarea');
+  $textArea.className = 'add-card-form__textarea';
+  $textArea.placeholder = 'Enter a note';
+
+  const clickAddButtonHandler = event => {
+    event.preventDefault();
+    const cardText = $textArea.value;
+    const $card = document.createElement('div');
+    $card.innerHTML = cardText;
+    $addCardForm.remove();
+    $boardBody.appendChild($card);
+  };
+
+  const $addCardForm = AddCardForm({
+    $textArea,
+    onSubmit: clickAddButtonHandler,
+  });
 
   $leftDiv.appendChild($cardCount);
   $leftDiv.appendChild($title);
@@ -58,6 +78,7 @@ function Board({ title = '' }) {
   $boardHeader.appendChild($leftDiv);
   $boardHeader.appendChild($rightDiv);
   $boardInner.appendChild($boardHeader);
+  $boardInner.appendChild($boardBody);
   $board.appendChild($boardInner);
 
   return $board;
