@@ -1,12 +1,8 @@
 import './AddCardForm.css';
 
-function AddCardForm() {
+function AddCardForm({ $textArea, onSubmit }) {
   const $addCardForm = document.createElement('form');
   $addCardForm.className = 'add-card-form add-card-form--m';
-
-  const $textArea = document.createElement('textarea');
-  $textArea.className = 'add-card-form__textarea';
-  $textArea.placeholder = 'Enter a note';
 
   const $buttonContainer = document.createElement('div');
   $buttonContainer.className =
@@ -16,6 +12,7 @@ function AddCardForm() {
   $addButton.className =
     'add-card-form__add-button add-card-form__add-button--mr';
   $addButton.innerHTML = 'Add';
+  $addButton.addEventListener('click', onSubmit);
 
   const $cancelButton = document.createElement('button');
   $cancelButton.className = 'add-card-form__cancel-button';
