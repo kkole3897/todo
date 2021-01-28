@@ -1,0 +1,47 @@
+.card {
+  padding: 8px;
+  border: 1px gray solid;
+  border-radius: 4px;
+  background-color: white;
+  cursor: move;
+}
+
+.card--my {
+  margin: 8px 0;
+}
+
+.card__inner--relative {
+  position: relative;
+}
+
+.card__icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  background-color: black;
+}
+
+.card__body {
+  padding: 0 2rem 0 2rem;
+  overflow-wrap: break-word;
+}
+
+.card__body--content {
+  cursor: pointer;
+}
+
+.card__body--author {
+  margin: 8px 0 0 0;
+}
+
+.card__delete-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  background-color: black;
+  cursor: pointer;
+}

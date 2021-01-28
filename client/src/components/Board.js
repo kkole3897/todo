@@ -4,6 +4,7 @@ import PlusIcon from '../assets/plus.svg';
 import MoreIcon from '../assets/more.svg';
 
 import AddCardForm from './AddCardForm';
+import Card from './Card';
 
 function Board({ title = '' }) {
   const $board = document.createElement('div');
@@ -40,7 +41,6 @@ function Board({ title = '' }) {
 
   let isAddCardFormOpened = false;
   const clickPlusButtonHandler = event => {
-    console.log('click plus');
     if (isAddCardFormOpened) {
       $addCardForm.remove();
     } else {
@@ -63,8 +63,7 @@ function Board({ title = '' }) {
     event.preventDefault();
     const cardText = $textArea.value;
     $textArea.value = '';
-    const $card = document.createElement('div');
-    $card.innerHTML = cardText;
+    const $card = Card({ content: cardText });
     count += 1;
     isAddCardFormOpened = !isAddCardFormOpened;
     $cardCount.innerHTML = count;
