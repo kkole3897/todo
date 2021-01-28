@@ -1,0 +1,51 @@
+.board {
+  width: 34rem;
+  height: 92vh;
+  border: 1px lightgray solid;
+  border-radius: 12px;
+  background-color: lightgray;
+}
+
+.board__inner {
+  padding: 12px;
+}
+
+.board__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.board__card-count {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 12px;
+  height: 12px;
+  padding: 4px;
+  border-radius: 32px;
+  font-weight: bold;
+  background-color: gray;
+}
+
+.board__title {
+  font-weight: bold;
+}
+
+.board__title--ml {
+  margin: 0 0 0 8px;
+}
+
+.board__add-card-button {
+  width: 12px;
+  cursor: pointer;
+}
+
+.board__add-card-button--mr {
+  margin: 0 8px 0 0;
+}
+
+.board__more-button {
+  width: 12px;
+  cursor: pointer;
+}

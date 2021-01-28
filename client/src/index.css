@@ -1,0 +1,10 @@
+.section__board {
+  display: flex;
+  justify-content: space-around;
+  padding: 0.75rem 0;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+}
