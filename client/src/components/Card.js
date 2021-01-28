@@ -1,4 +1,5 @@
 import './Card.css';
+import MoreIcon from '../assets/more.svg';
 
 function Card({ content }) {
   const $card = document.createElement('div');
@@ -24,12 +25,13 @@ function Card({ content }) {
   $cardBody.appendChild($cardContent);
   $cardBody.appendChild($cardAuthor);
 
-  const $deleteButton = document.createElement('div');
-  $deleteButton.className = 'card__delete-button';
+  const $moreButton = document.createElement('div');
+  $moreButton.className = 'card__more-button';
+  $moreButton.innerHTML = `<img src='${MoreIcon}' />`;
 
   $cardInner.appendChild($cardIcon);
   $cardInner.appendChild($cardBody);
-  $cardInner.append($deleteButton);
+  $cardInner.append($moreButton);
   $card.appendChild($cardInner);
 
   return $card;

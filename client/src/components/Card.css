@@ -37,12 +37,11 @@
   font-size: 12px;
 }
 
-.card__delete-button {
+.card__more-button {
   position: absolute;
-  top: 0;
+  top: -4px;
   right: 0;
-  width: 20px;
-  height: 20px;
-  background-color: black;
+  width: 12px;
+  height: 12px;
   cursor: pointer;
 }
