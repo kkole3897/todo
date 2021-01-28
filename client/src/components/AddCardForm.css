@@ -1,0 +1,53 @@
+.add-card-form {
+  width: 100%;
+}
+
+.add-card-form--m {
+  margin: 16px 0;
+}
+
+.add-card-form__textarea {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.add-card-form__textarea:focus {
+  outline: none;
+  border: 1px #0366d6 solid;
+  border-radius: 4px;
+  box-shadow: 0 0 0 3px #b6cdf0;
+}
+
+.add-card-form__button-container {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.add-card-form__button-container--m {
+  margin: 4px 0;
+}
+
+.add-card-form__add-button {
+  width: 100%;
+  height: 2rem;
+  border: 1px darkgreen solid;
+  border-radius: 4px;
+  background-color: green;
+  color: white;
+  font-weight: bold;
+}
+
+.add-card-form__add-button--mr {
+  margin: 0 8px 0 0;
+}
+
+.add-card-form__cancel-button {
+  width: 100%;
+  height: 2rem;
+  border: 1px darkgray solid;
+  border-radius: 4px;
+  background-color: lightgray;
+  font-weight: bold;
+}
