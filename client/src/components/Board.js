@@ -44,7 +44,8 @@ function Board({ title = '' }) {
     if (isAddCardFormOpened) {
       $addCardForm.remove();
     } else {
-      event.target.closest('.board__inner').appendChild($addCardForm);
+      const parent = event.target.closest('.board__inner');
+      parent.insertBefore($addCardForm, $boardBody);
     }
     isAddCardFormOpened = !isAddCardFormOpened;
   };
