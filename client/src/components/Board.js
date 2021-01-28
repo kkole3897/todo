@@ -72,9 +72,17 @@ function Board({ title = '' }) {
     $boardBody.appendChild($card);
   };
 
+  const clickCancleButtonHandler = event => {
+    event.preventDefault();
+    $textArea.value = '';
+    isAddCardFormOpened = !isAddCardFormOpened;
+    $addCardForm.remove();
+  };
+
   const $addCardForm = AddCardForm({
     $textArea,
     onSubmit: clickAddButtonHandler,
+    onCancel: clickCancleButtonHandler,
   });
 
   $leftDiv.appendChild($cardCount);
