@@ -33,9 +33,17 @@ function Board({ title = '' }) {
     'board__add-card-button board__add-card-button--mr';
   $addCardButton.innerHTML = `<img src=${PlusIcon} />`;
 
+  const clickPlusButtonHandler = event => {
+    event.target.closest('.board__inner').appendChild($addCardForm);
+  };
+
+  $addCardButton.addEventListener('click', clickPlusButtonHandler);
+
   const $moreButton = document.createElement('div');
   $moreButton.className = 'board__more-button';
   $moreButton.innerHTML = `<img src=${MoreIcon} />`;
+
+  const $addCardForm = AddCardForm();
 
   $leftDiv.appendChild($cardCount);
   $leftDiv.appendChild($title);
@@ -44,7 +52,6 @@ function Board({ title = '' }) {
   $boardHeader.appendChild($leftDiv);
   $boardHeader.appendChild($rightDiv);
   $boardInner.appendChild($boardHeader);
-  $boardInner.appendChild(AddCardForm());
   $board.appendChild($boardInner);
 
   return $board;
