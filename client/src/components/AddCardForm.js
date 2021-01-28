@@ -21,6 +21,14 @@ function AddCardForm() {
   $cancelButton.className = 'add-card-form__cancel-button';
   $cancelButton.innerHTML = 'Cancel';
 
+  const clickCancleButtonHandler = event => {
+    event.preventDefault();
+
+    $addCardForm.remove();
+  };
+
+  $cancelButton.addEventListener('click', clickCancleButtonHandler);
+
   $buttonContainer.appendChild($addButton);
   $buttonContainer.appendChild($cancelButton);
   $addCardForm.appendChild($textArea);
