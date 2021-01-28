@@ -2,6 +2,8 @@ import './Board.css';
 import PlusIcon from '../assets/plus.svg';
 import MoreIcon from '../assets/more.svg';
 
+import AddCardForm from './AddCardForm';
+
 function Board({ title = '' }) {
   const $board = document.createElement('div');
   $board.className = 'board';
@@ -42,6 +44,7 @@ function Board({ title = '' }) {
   $boardHeader.appendChild($leftDiv);
   $boardHeader.appendChild($rightDiv);
   $boardInner.appendChild($boardHeader);
+  $boardInner.appendChild(AddCardForm());
   $board.appendChild($boardInner);
 
   return $board;

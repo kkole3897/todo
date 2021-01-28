@@ -1,13 +1,13 @@
 .board {
-  width: 34rem;
-  height: 92vh;
-  border: 1px lightgray solid;
-  border-radius: 12px;
+  width: 30rem;
+  height: 91vh;
+  border: 1px gray solid;
+  border-radius: 8px;
   background-color: lightgray;
 }
 
 .board__inner {
-  padding: 12px;
+  padding: 16px;
 }
 
 .board__header {
@@ -20,9 +20,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 12px;
-  height: 12px;
-  padding: 4px;
+  width: 20px;
+  height: 20px;
   border-radius: 32px;
   font-weight: bold;
   background-color: gray;
