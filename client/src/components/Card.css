@@ -1,5 +1,5 @@
 .card {
-  padding: 8px;
+  padding: 12px;
   border: 1px gray solid;
   border-radius: 4px;
   background-color: white;
@@ -23,7 +23,7 @@
 }
 
 .card__body {
-  padding: 0 2rem 0 2rem;
+  padding: 0 1.5rem 0 1.5rem;
   overflow-wrap: break-word;
 }
 
@@ -38,7 +38,7 @@
 
 .card__more-button {
   position: absolute;
-  top: -4px;
+  top: 0;
   right: 0;
   width: 12px;
   height: 12px;
