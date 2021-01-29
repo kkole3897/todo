@@ -24,7 +24,7 @@ function Board({ title = '' }) {
     event.preventDefault();
     const cardText = $textArea.value;
     $textArea.value = '';
-    const $card = Card({ content: cardText });
+    const $card = Card({ content: cardText, onRemove: removeCardHandler });
     count += 1;
     isAddCardFormOpened = !isAddCardFormOpened;
     $cardCount.innerHTML = count;
@@ -47,6 +47,13 @@ function Board({ title = '' }) {
     } else {
       $addButton.disabled = true;
     }
+  };
+
+  const removeCardHandler = event => {
+    const $card = event.target.closest('.card');
+    $card.remove();
+    count -= 1;
+    $cardCount.innerHTML = count;
   };
 
   const $board = document.createElement('div');
