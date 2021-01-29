@@ -5,7 +5,7 @@ import NoteIcon from '../assets/note.svg';
 
 import CardDropdown from './CardDropdown';
 
-function Card({ content }) {
+function Card({ content, onRemove }) {
   let isDropdownOpened = false;
 
   const clickMoreButtonHandler = () => {
@@ -15,10 +15,6 @@ function Card({ content }) {
       $dropdown.remove();
     }
     isDropdownOpened = !isDropdownOpened;
-  };
-
-  const removeCardHandler = () => {
-    $card.remove();
   };
 
   const $card = document.createElement('div');
@@ -50,7 +46,7 @@ function Card({ content }) {
   $moreButton.innerHTML = `<img src='${MoreIcon}' />`;
   $moreButton.addEventListener('click', clickMoreButtonHandler);
 
-  const $dropdown = CardDropdown({ onRemove: removeCardHandler });
+  const $dropdown = CardDropdown({ onRemove });
 
   $cardInner.appendChild($cardIcon);
   $cardInner.appendChild($cardBody);
