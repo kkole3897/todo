@@ -9,12 +9,12 @@
   background-color: white;
 }
 
-.card__dropdown--menu {
+.card__dropdown--menu-item {
   margin: 4px 0;
   padding: 4px 8px;
 }
 
-.card__dropdown--menu:hover {
+.card__dropdown--menu-item:hover {
   background-color: blue;
   color: white;
 }
