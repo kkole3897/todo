@@ -7,6 +7,47 @@ import AddCardForm from './AddCardForm';
 import Card from './Card';
 
 function Board({ title = '' }) {
+  let count = 0;
+  let isAddCardFormOpened = false;
+
+  const clickPlusButtonHandler = event => {
+    if (isAddCardFormOpened) {
+      $addCardForm.remove();
+    } else {
+      const parent = event.target.closest('.board__inner');
+      parent.insertBefore($addCardForm, $boardBody);
+    }
+    isAddCardFormOpened = !isAddCardFormOpened;
+  };
+
+  const clickAddButtonHandler = event => {
+    event.preventDefault();
+    const cardText = $textArea.value;
+    $textArea.value = '';
+    const $card = Card({ content: cardText });
+    count += 1;
+    isAddCardFormOpened = !isAddCardFormOpened;
+    $cardCount.innerHTML = count;
+    $addButton.disabled = true;
+    $addCardForm.remove();
+    $boardBody.appendChild($card);
+  };
+
+  const clickCancleButtonHandler = event => {
+    event.preventDefault();
+    $textArea.value = '';
+    isAddCardFormOpened = !isAddCardFormOpened;
+    $addCardForm.remove();
+  };
+
+  const inputTextAreaHandler = event => {
+    if ($textArea.value.length > 0) {
+      $addButton.disabled = false;
+    } else {
+      $addButton.disabled = true;
+    }
+  };
+
   const $board = document.createElement('div');
   $board.className = 'board';
 
@@ -27,7 +68,6 @@ function Board({ title = '' }) {
 
   const $cardCount = document.createElement('div');
   $cardCount.className = 'board__card-count';
-  let count = 0;
   $cardCount.innerHTML = count;
 
   const $title = document.createElement('div');
@@ -38,18 +78,6 @@ function Board({ title = '' }) {
   $openCardFormButton.className =
     'board__open-card-form-button board__open-card-form-button--mr';
   $openCardFormButton.innerHTML = `<img src=${PlusIcon} />`;
-
-  let isAddCardFormOpened = false;
-  const clickPlusButtonHandler = event => {
-    if (isAddCardFormOpened) {
-      $addCardForm.remove();
-    } else {
-      const parent = event.target.closest('.board__inner');
-      parent.insertBefore($addCardForm, $boardBody);
-    }
-    isAddCardFormOpened = !isAddCardFormOpened;
-  };
-
   $openCardFormButton.addEventListener('click', clickPlusButtonHandler);
 
   const $moreButton = document.createElement('div');
@@ -60,29 +88,14 @@ function Board({ title = '' }) {
   $textArea.className = 'add-card-form__textarea';
   $textArea.placeholder = 'Enter a note';
 
-  const clickAddButtonHandler = event => {
-    event.preventDefault();
-    const cardText = $textArea.value;
-    $textArea.value = '';
-    const $card = Card({ content: cardText });
-    count += 1;
-    isAddCardFormOpened = !isAddCardFormOpened;
-    $cardCount.innerHTML = count;
-    $addCardForm.remove();
-    $boardBody.appendChild($card);
-  };
-
-  const clickCancleButtonHandler = event => {
-    event.preventDefault();
-    $textArea.value = '';
-    isAddCardFormOpened = !isAddCardFormOpened;
-    $addCardForm.remove();
-  };
+  const $addButton = document.createElement('button');
 
   const $addCardForm = AddCardForm({
     $textArea,
+    $addButton,
     onSubmit: clickAddButtonHandler,
     onCancel: clickCancleButtonHandler,
+    onChanged: inputTextAreaHandler,
   });
 
   $leftDiv.appendChild($cardCount);

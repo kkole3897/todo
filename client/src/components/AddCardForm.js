@@ -1,6 +1,6 @@
 import './AddCardForm.css';
 
-function AddCardForm({ $textArea, onSubmit, onCancel }) {
+function AddCardForm({ $textArea, $addButton, onSubmit, onCancel, onChanged }) {
   const $addCardForm = document.createElement('form');
   $addCardForm.className = 'add-card-form add-card-form--m';
 
@@ -8,10 +8,12 @@ function AddCardForm({ $textArea, onSubmit, onCancel }) {
   $buttonContainer.className =
     'add-card-form__button-container add-card-form__button-container--m';
 
-  const $addButton = document.createElement('button');
+  $textArea.addEventListener('input', onChanged);
+
   $addButton.className =
     'add-card-form__add-button add-card-form__add-button--mr';
   $addButton.innerHTML = 'Add';
+  $addButton.disabled = true;
   $addButton.addEventListener('click', onSubmit);
 
   const $cancelButton = document.createElement('button');
