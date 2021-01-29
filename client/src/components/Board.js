@@ -34,10 +34,10 @@ function Board({ title = '' }) {
   $title.className = 'board__title board__title--ml';
   $title.innerHTML = title;
 
-  const $addCardButton = document.createElement('div');
-  $addCardButton.className =
-    'board__add-card-button board__add-card-button--mr';
-  $addCardButton.innerHTML = `<img src=${PlusIcon} />`;
+  const $openCardFormButton = document.createElement('div');
+  $openCardFormButton.className =
+    'board__open-card-form-button board__open-card-form-button--mr';
+  $openCardFormButton.innerHTML = `<img src=${PlusIcon} />`;
 
   let isAddCardFormOpened = false;
   const clickPlusButtonHandler = event => {
@@ -50,7 +50,7 @@ function Board({ title = '' }) {
     isAddCardFormOpened = !isAddCardFormOpened;
   };
 
-  $addCardButton.addEventListener('click', clickPlusButtonHandler);
+  $openCardFormButton.addEventListener('click', clickPlusButtonHandler);
 
   const $moreButton = document.createElement('div');
   $moreButton.className = 'board__more-button';
@@ -87,7 +87,7 @@ function Board({ title = '' }) {
 
   $leftDiv.appendChild($cardCount);
   $leftDiv.appendChild($title);
-  $rightDiv.appendChild($addCardButton);
+  $rightDiv.appendChild($openCardFormButton);
   $rightDiv.appendChild($moreButton);
   $boardHeader.appendChild($leftDiv);
   $boardHeader.appendChild($rightDiv);

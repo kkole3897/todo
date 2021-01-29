@@ -35,12 +35,12 @@
   margin: 0 0 0 8px;
 }
 
-.board__add-card-button {
+.board__open-card-form-button {
   width: 12px;
   cursor: pointer;
 }
 
-.board__add-card-button--mr {
+.board__open-card-form-button--mr {
   margin: 0 8px 0 0;
 }
 
