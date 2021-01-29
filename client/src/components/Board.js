@@ -37,6 +37,7 @@ function Board({ title = '' }) {
     event.preventDefault();
     $textArea.value = '';
     isAddCardFormOpened = !isAddCardFormOpened;
+    $addButton.disabled = true;
     $addCardForm.remove();
   };
 
