@@ -3,7 +3,20 @@ import './Card.css';
 import MoreIcon from '../assets/more.svg';
 import NoteIcon from '../assets/note.svg';
 
+import CardDropdown from './CardDropdown';
+
 function Card({ content }) {
+  let isDropdownOpened = false;
+
+  const clickMoreButtonHandler = () => {
+    if (!isDropdownOpened) {
+      $moreButton.appendChild($dropdown);
+    } else {
+      $dropdown.remove();
+    }
+    isDropdownOpened = !isDropdownOpened;
+  };
+
   const $card = document.createElement('div');
   $card.className = 'card card--my';
 
@@ -31,6 +44,9 @@ function Card({ content }) {
   const $moreButton = document.createElement('div');
   $moreButton.className = 'card__more-button';
   $moreButton.innerHTML = `<img src='${MoreIcon}' />`;
+  $moreButton.addEventListener('click', clickMoreButtonHandler);
+
+  const $dropdown = CardDropdown();
 
   $cardInner.appendChild($cardIcon);
   $cardInner.appendChild($cardBody);
