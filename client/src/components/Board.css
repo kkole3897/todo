@@ -3,7 +3,7 @@
   height: 91vh;
   border: 1px var(--main-border-color) solid;
   border-radius: 8px;
-  background-color: var(--board-bg-color);
+  background-color: var(--main-bg-color);
 }
 
 .board__inner {
