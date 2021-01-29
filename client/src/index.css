@@ -18,6 +18,10 @@
   --counter-font-color: #6a737d;
 }
 
+button {
+  outline: none;
+}
+
 .section__board {
   display: flex;
   justify-content: space-around;
