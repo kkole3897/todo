@@ -30,7 +30,7 @@ function Board({ title = '' }) {
     $cardCount.innerHTML = count;
     $addButton.disabled = true;
     $addCardForm.remove();
-    $boardBody.appendChild($card);
+    $boardBody.prepend($card);
   };
 
   const clickCancleButtonHandler = event => {
