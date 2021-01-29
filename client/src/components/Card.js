@@ -17,6 +17,10 @@ function Card({ content }) {
     isDropdownOpened = !isDropdownOpened;
   };
 
+  const removeCardHandler = () => {
+    $card.remove();
+  };
+
   const $card = document.createElement('div');
   $card.className = 'card card--my';
 
@@ -46,7 +50,7 @@ function Card({ content }) {
   $moreButton.innerHTML = `<img src='${MoreIcon}' />`;
   $moreButton.addEventListener('click', clickMoreButtonHandler);
 
-  const $dropdown = CardDropdown();
+  const $dropdown = CardDropdown({ onRemove: removeCardHandler });
 
   $cardInner.appendChild($cardIcon);
   $cardInner.appendChild($cardBody);

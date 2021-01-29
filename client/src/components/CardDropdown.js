@@ -1,6 +1,6 @@
 import './CardDropdown.css';
 
-function CardDropdown() {
+function CardDropdown({ onRemove }) {
   const $dropdown = document.createElement('div');
   $dropdown.className = 'card__dropdown';
 
@@ -17,6 +17,7 @@ function CardDropdown() {
   const $deleteMenu = document.createElement('div');
   $deleteMenu.className = 'card__dropdown--menu-item';
   $deleteMenu.innerHTML = 'Delete';
+  $deleteMenu.addEventListener('click', onRemove);
 
   $dropdownMenu.appendChild($editMenu);
   $dropdownMenu.appendChild($deleteMenu);
