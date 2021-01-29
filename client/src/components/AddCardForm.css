@@ -9,6 +9,7 @@
 .add-card-form__textarea {
   width: 100%;
   padding: 8px;
+  border-color: var(--main-border-color);
   border-radius: 4px;
 }
 
@@ -32,11 +33,16 @@
 .add-card-form__add-button {
   width: 100%;
   height: 2rem;
-  border: 1px darkgreen solid;
+  border: 1px var(--green-button-border-color) solid;
   border-radius: 4px;
-  background-color: green;
+  background-color: var(--green-button-bg-color);
   color: white;
   font-weight: bold;
+}
+
+.add-card-form__add-button:hover {
+  border-color: var(--green-button-hover-border-color);
+  background-color: var(--green-button-hover-bg-color);
 }
 
 .add-card-form__add-button--mr {
@@ -51,8 +57,13 @@
 .add-card-form__cancel-button {
   width: 100%;
   height: 2rem;
-  border: 1px darkgray solid;
+  border: 1px var(--button-border-color) solid;
   border-radius: 4px;
-  background-color: lightgray;
+  background-color: var(--button-bg-color);
   font-weight: bold;
+}
+
+.add-card-form__cancel-button:hover {
+  border-color: var(--button-hover-border-color);
+  background-color: var(--button-hover-bg-color);
 }

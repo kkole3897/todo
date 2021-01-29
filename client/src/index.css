@@ -2,6 +2,22 @@
   box-sizing: border-box;
 }
 
+:root {
+  --main-border-color: #eaecef;
+  --main-hover-bg-color: #0366d6;
+  --board-bg-color: #f6f8fa;
+  --button-bg-color: #fafbfc;
+  --button-border-color: #1b1f2326;
+  --button-hover-bg-color: #f3f4f6;
+  --button-hover-border-color: #1b1f2326;
+  --green-button-bg-color: #2ea44f;
+  --green-button-border-color: #1b1f2326;
+  --green-button-hover-bg-color: #2c974b;
+  --green-button-hover-border-color: #1b1f2326;
+  --counter-bg-color: #d1d5da80;
+  --counter-font-color: #6a737d;
+}
+
 .section__board {
   display: flex;
   justify-content: space-around;

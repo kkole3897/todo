@@ -1,9 +1,9 @@
 .board {
   width: 30rem;
   height: 91vh;
-  border: 1px gray solid;
+  border: 1px var(--main-border-color) solid;
   border-radius: 8px;
-  background-color: lightgray;
+  background-color: var(--board-bg-color);
 }
 
 .board__inner {
@@ -24,7 +24,8 @@
   height: 20px;
   border-radius: 32px;
   font-weight: bold;
-  background-color: gray;
+  background-color: var(--counter-bg-color);
+  color: var(--counter-font-color);
 }
 
 .board__title {

@@ -4,7 +4,7 @@
   top: 0;
   width: 6rem;
   margin: 16px 0 0 0;
-  border: 1px gray solid;
+  border: 1px var(--main-border-color) solid;
   border-radius: 4px;
   background-color: white;
   z-index: 100;
@@ -27,6 +27,6 @@
 }
 
 .card__dropdown--menu-item:hover {
-  background-color: blue;
+  background-color: var(--main-hover-bg-color);
   color: white;
 }
