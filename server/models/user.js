@@ -1,4 +1,4 @@
-class Users {
+class User {
   constructor(database) {
     this.database = database;
 
@@ -47,4 +47,4 @@ class Users {
   }
 }
 
-module.exports = Users;
+module.exports = User;
