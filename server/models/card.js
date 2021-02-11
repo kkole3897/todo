@@ -1,130 +1,114 @@
-const mysql = require('mysql2');
+class Card {
+  constructor(database) {
+    this.database = database;
 
-const pool = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASS,
-    database: 'todo',
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
-});
-
-function getCardsByUserId(userId) {
-    return new Promise((resolve, reject) => {
-        pool.query(
-            `SELECT List.list_id, title, card_id, description
-            FROM User NATURAL JOIN List JOIN Card
-            ON List.list_id = Card.list_id
-            WHERE user_id = ? AND List.removed = 0 AND Card.removed = 0
-            ORDER BY List.list_id;`,
-            [userId],
-            (err, results, fields) => {
-                try {
-                    resolve(results);
-                } catch {
-                    reject(err);
-                }
-            }
-        );
+    const createCardTableQuery = `
+      CREATE TABLE IF NOT EXISTS card(
+        id INT AUTO_INCREMENT,
+        description VARCHAR(500) NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        updated_at DATETIME ON UPDATE CURRENT_TIMESTAMP,
+        deleted_at DATETIME,
+        user_id VARCHAR(20) NOT NULL,
+        board_id INT NOT NULL,
+        PRIMARY KEY (id),
+        FOREIGN KEY (user_id, board_id) REFERENCES board(user_id, id)
+      );
+    `;
+    this.database.query(createCardTableQuery, (err, result) => {
+      // console.log(result);
     });
+  }
+
+  async addCard({ description, userId, boardId }) {
+    if (!this.validateDescription(description)) {
+      throw new Error('invalid description');
+    }
+    const addCardQuery = `
+      INSERT INTO card(description, user_id, board_id)
+      VALUES (?, ?, ?);
+    `;
+    const [result] = await this.database.query(addCardQuery, [
+      description,
+      userId,
+      boardId,
+    ]);
+    return { id: result.insertId };
+  }
+
+  async updateDescription({ description, cardId }) {
+    if (!this.validateDescription(description)) {
+      throw new Error('invalid description');
+    }
+    const updateDescriptionQuery = `
+      UPDATE card
+      SET description = ?
+      WHERE id = ? AND deleted_at IS NULL;
+    `;
+    const [result] = await this.database.query(updateDescriptionQuery, [
+      description,
+      cardId,
+    ]);
+    if (result.affectedRows !== 1) {
+      throw new Error(`Cannot find id '${cardId}' in table 'card'`);
+    }
+    return { id: cardId };
+  }
+
+  async removeCard(cardId) {
+    const removeCardQuery = `
+      UPDATE card
+      SET deleted_at = CURRENT_TIMESTAMP
+      WHERE id = ? AND deleted_at IS NULL;
+    `;
+    const [result] = await this.database.query(removeCardQuery, [cardId]);
+    if (result.affectedRows !== 1) {
+      throw new Error(`Cannot find id '${cardId}' in table 'card'`);
+    }
+    return { id: cardId };
+  }
+
+  async changeBoard({ cardId, targetBoardId }) {
+    const changeBoardQuery = `
+      UPDATE card
+      SET board_id = ?
+      WHERE id = ? AND deleted_at IS NULL;
+    `;
+    const [result] = await this.database.query(changeBoardQuery, [
+      targetBoardId,
+      cardId,
+    ]);
+    if (result.affectedRows !== 1) {
+      throw new Error(`Cannot find id '${cardId}' in table 'card'`);
+    }
+    return { id: cardId };
+  }
+
+  async getCard(cardId) {
+    const getCardQuery = `
+      SELECT id, description, user_id userId, board_id boardId
+      FROM card
+      WHERE id = ? AND deleted_at IS NULL;
+    `;
+    const [rows] = await this.database.query(getCardQuery, [cardId]);
+    return { ...rows[0] };
+  }
+
+  async getCards(boardId) {
+    const getCardsQuery = `
+      SELECT id, description, user_id userId, board_id boardId
+      FROM card
+      WHERE board_id = ? AND deleted_at IS NULL;
+    `;
+    const [rows] = await this.database.query(getCardsQuery, [boardId]);
+    return rows.map(row => {
+      return { ...row };
+    });
+  }
+
+  validateDescription(description) {
+    return 0 < description.length && description.length <= 500;
+  }
 }
 
-function updateCardDescription(cardId, description) {
-    return new Promise((resolve, reject) => {
-        pool.query(
-            `UPDATE Card
-            SET description = ?
-            WHERE card_id = ?;`,
-            [description, cardId],
-            (err, results, fields) => {
-                try {
-                    resolve(results);
-                } catch {
-                    reject(err);
-                }
-            }
-        );
-    });
-}
-
-
-function addCard(listId, description) {
-    return new Promise((resolve, reject) => {
-        pool.query(
-            `INSERT INTO Card(list_id, description, removed)
-            VALUES(?, ?, 0);`,
-            [listId, description],
-            (err, results, fields) => {
-                try {
-                    resolve(results);
-                } catch {
-                    reject(err);
-                }
-            }
-        );
-    });
-}
-
-function removeCard(cardId) {
-    return new Promise((resolve, reject) => {
-        pool.query(
-            `UPDATE Card
-            SET removed = 1
-            WHERE card_id = ?;`,
-            [cardId],
-            (err, results, fields) => {
-                try {
-                    resolve(results);
-                } catch {
-                    reject(err);
-                }
-            }
-        );
-    });
-}
-
-function changeIncludedList(cardId, newListId) {
-    return new Promise((resolve, reject) => {
-        pool.query(
-            `UPDATE Card
-            SET list_id = ?
-            WHERE card_id = ? AND removed = 0;`,
-            [newListId, cardId],
-            (err, results, fields) => {
-                try {
-                    resolve(results);
-                } catch {
-                    reject(err);
-                }
-            }
-        );
-    });
-}
-
-function updateAllValues(cardId, listId, description, removed) {
-    return new Promise((resolve, reject) => {
-        pool.query(
-            `UPDATE Card
-            SET list_id=?, description=?, removed=?
-            WHERE card_id=?;`,
-            [listId, description, removed, cardId],
-            (err, results, fields) => {
-                try {
-                    resolve(results);
-                } catch {
-                    reject(err);
-                }
-            }
-        );
-    });
-}
-
-module.exports = {
-    getCardsByUserId,
-    updateCardDescription,
-    addCard,
-    removeCard,
-    changeIncludedList,
-    updateAllValues
-};
+module.exports = Card;
