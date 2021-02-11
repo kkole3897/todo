@@ -9,7 +9,7 @@ class Board {
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
         updated_at DATETIME ON UPDATE CURRENT_TIMESTAMP,
         deleted_at DATETIME,
-        user_id VARCHAR(20),
+        user_id VARCHAR(20) NOT NULL,
         PRIMARY KEY (id),
         FOREIGN KEY (user_id) REFERENCES user(id),
         UNIQUE KEY unique_board_name_by_user (name, user_id)
