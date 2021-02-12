@@ -7,7 +7,7 @@ const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS) || 10;
 class Auth {
   constructor() {}
 
-  async signup(user) {
+  async signUp(user) {
     try {
       if (!this.validateId(user.id)) {
         throw new Error(
@@ -26,7 +26,7 @@ class Auth {
     }
   }
 
-  async signin(user) {
+  async signIn(user) {
     try {
       const matchedUser = await userModel.getUserById(user.id);
       if (!matchedUser) {
