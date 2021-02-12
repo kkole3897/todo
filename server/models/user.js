@@ -1,11 +1,15 @@
+require('dotenv').config();
+const bcrypt = require('bcrypt');
+
 class User {
   constructor(database) {
     this.database = database;
+    this.saltRounds = parseInt(process.env.SALT_ROUNDS) || 10;
 
     const createUserTableQuery = `
       CREATE TABLE IF NOT EXISTS user(
         id varchar(20),
-        password varchar(16) NOT NULL,
+        password varchar(255) NOT NULL,
         PRIMARY KEY(id)
       );
     `;
@@ -22,18 +26,26 @@ class User {
       INSERT INTO user(id, password)
       VALUES (?, ?);
     `;
-    await this.database.query(addUserQuery, [id, password]);
+    const hash = await bcrypt.hash(password, this.saltRounds);
+    await this.database.query(addUserQuery, [id, hash]);
     return { id };
   }
 
   async getUser({ id, password }) {
     const getUserQuery = `
-        SELECT id
+        SELECT id, password
         FROM user
-        WHERE id = ? AND password = ?;
+        WHERE id = ?;
       `;
-    const [rows] = await this.database.query(getUserQuery, [id, password]);
-    return { ...rows[0] };
+    const [[user]] = await this.database.query(getUserQuery, [id, password]);
+    if (!user) {
+      throw new Error('Cannot find any users who match id');
+    }
+    const isPasswordRight = await bcrypt.compare(password, user.password);
+    if (!isPasswordRight) {
+      throw new Error('Incorrect password');
+    }
+    return { ...user };
   }
 
   validateId(id) {
