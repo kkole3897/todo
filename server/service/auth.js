@@ -1,4 +1,8 @@
+require('dotenv').config();
+const bcrypt = require('bcrypt');
 const { userModel } = require('../models');
+
+const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS) || 10;
 
 class Auth {
   constructor() {}
@@ -14,7 +18,8 @@ class Auth {
           'Password must be between 8 and 16 characters including alphabets, numbers and special characters.',
         );
       }
-      const result = await userModel.addUser(user);
+      const hash = await bcrypt.hash(user.password, SALT_ROUNDS);
+      const result = await userModel.addUser({ ...user, password: hash });
       return result;
     } catch (err) {
       throw err;
