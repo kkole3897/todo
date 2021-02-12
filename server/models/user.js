@@ -19,9 +19,6 @@ class User {
   }
 
   async addUser({ id, password }) {
-    if (!this.validateId(id) || !this.validatePassword(password)) {
-      throw new Error('invalid id or password');
-    }
     const addUserQuery = `
       INSERT INTO user(id, password)
       VALUES (?, ?);
@@ -46,16 +43,6 @@ class User {
       throw new Error('Incorrect password');
     }
     return { ...user };
-  }
-
-  validateId(id) {
-    const pattern = /^[a-z0-9][a-z0-9\-_]{4,19}$/;
-    return pattern.test(id);
-  }
-
-  validatePassword(password) {
-    const pattern = /^(?=.*\d)(?=.*[a-z])(?=.*[~`!@#$%^&*()\-_=+{}\[\]\\|:;'",<.>/?]).{8,16}$/;
-    return pattern.test(password);
   }
 }
 
