@@ -26,6 +26,25 @@ class Auth {
     }
   }
 
+  async signin(user) {
+    try {
+      const matchedUser = await userModel.getUserById(user.id);
+      if (!matchedUser) {
+        throw new Error('Cannot find any users who match id.');
+      }
+      const isPasswordMatched = await bcrypt.compare(
+        user.password,
+        matchedUser.password,
+      );
+      if (!isPasswordMatched) {
+        throw new Error('Password is not matched.');
+      }
+      return matchedUser;
+    } catch (err) {
+      throw err;
+    }
+  }
+
   validateId(id) {
     const pattern = /^[a-z0-9][a-z0-9\-_]{4,19}$/;
     return pattern.test(id);
