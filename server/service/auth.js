@@ -39,6 +39,7 @@ class Auth {
       if (!isPasswordMatched) {
         throw new Error('Password is not matched.');
       }
+      delete matchedUser.password;
       return matchedUser;
     } catch (err) {
       throw err;
