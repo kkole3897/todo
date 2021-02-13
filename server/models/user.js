@@ -31,7 +31,7 @@ class User {
         WHERE id = ?;
       `;
     const [[user]] = await this.database.query(getUserQuery, [id]);
-    return { ...user };
+    return user ? { ...user } : null;
   }
 }
 
