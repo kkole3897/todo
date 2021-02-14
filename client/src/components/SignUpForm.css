@@ -23,6 +23,10 @@
   margin: 12px 0;
 }
 
+.sign-up-form__label--error {
+  color: #cb2431;
+}
+
 .sign-up-form__input {
   padding: 6px;
   border: 1px solid var(--main-border-color);
@@ -39,6 +43,14 @@
 
 .sign-up-form__input--mt {
   margin: 8px 0 0 0;
+}
+
+.sign-up-form__input--error {
+  border-color: #cb2431;
+}
+
+.sign-up-form__input--error:focus {
+  border-color: #cb2431;
 }
 
 .sign-up-form__submit-button {
