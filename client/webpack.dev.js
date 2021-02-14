@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
 
@@ -8,5 +9,11 @@ module.exports = merge(common, {
   devServer: {
     contentBase: './dist',
     hot: true,
+    proxy: {
+      '/api': {
+        target: process.env.API_URL,
+        pathRewrite: { '^/api': '' },
+      },
+    },
   },
 });

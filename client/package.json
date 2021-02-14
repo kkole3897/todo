@@ -46,6 +46,7 @@
     "webpack-merge": "^5.7.3"
   },
   "dependencies": {
-    "@babel/runtime": "^7.12.13"
+    "@babel/runtime": "^7.12.13",
+    "dotenv": "^8.2.0"
   }
 }
