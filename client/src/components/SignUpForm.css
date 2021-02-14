@@ -71,6 +71,7 @@
 .sign-up-form__submit-button:disabled {
   border-color: #1b1f231a;
   background-color: #94d3a2;
+  cursor: default;
 }
 
 .sign-up-form__submit-button--mt {
