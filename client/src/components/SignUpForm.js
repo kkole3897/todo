@@ -17,6 +17,7 @@ function SignUpForm() {
     isPasswordProper = false;
 
   const onIdChanged = event => {
+    event.preventDefault();
     const pattern = /^[a-z0-9][a-z0-9\-_]{4,19}$/;
     if (!pattern.test($idInput.value)) {
       setIsIdProper(false);
@@ -27,12 +28,38 @@ function SignUpForm() {
   };
 
   const onPasswordChanged = event => {
+    event.preventDefault();
     const pattern = /^(?=.*\d)(?=.*[a-z])(?=.*[~`!@#$%^&*()\-_=+{}\[\]\\|:;'",<.>/?]).{8,16}$/;
     if (!pattern.test($passwordInput.value)) {
       setIsPasswordProper(false);
       return;
     }
     setIsPasswordProper(true);
+  };
+
+  const onSubmitButtonClicked = async event => {
+    event.preventDefault();
+    const id = $idInput.value;
+    const password = $passwordInput.value;
+    const user = { id, password };
+    const signUpURL = '/api/auth/signup';
+    try {
+      const response = await fetch(signUpURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(user),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        // TODO: 에러 처리 제대로 하기
+        throw new Error(data.message);
+      }
+      console.log(data);
+    } catch (err) {
+      console.log(err.message);
+    }
   };
 
   const setIsIdProper = value => {
@@ -133,6 +160,7 @@ function SignUpForm() {
     'sign-up-form__submit-button sign-up-form__submit-button--mt';
   $submitButton.innerHTML = 'Create account';
   $submitButton.disabled = true;
+  $submitButton.addEventListener('click', onSubmitButtonClicked);
 
   $idBox.appendChild($idLabel);
   $idBox.appendChild($idInput);
