@@ -5,8 +5,6 @@
 
 **J054 TODO 리스트**는 Github project나 Trello와 유사한 방식으로 프로젝트 관리, 스케줄 관리를 할 수 있게 도와주는 웹 어플리케이션이다.
 
-배포 주소: http://todo-j054.p-e.kr/ 
-
 ## Documents
 
 프로젝트를 진행하면서 생성되는 모든 문서는 다음 notion 링크에서 확인할 수 있다.
