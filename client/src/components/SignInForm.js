@@ -13,6 +13,33 @@ function SignInForm() {
   const $signUpBox = document.createElement('div');
   const $signUpLink = document.createElement('a');
 
+  const onSubmitButtonClicked = async event => {
+    event.preventDefault();
+    const id = $idInput.value;
+    const password = $passwordInput.value;
+    const user = { id, password };
+    const signInURL = '/api/auth/signin';
+    try {
+      const response = await fetch(signInURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(user),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+      console.log(data);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+  $idInput.id = 'id';
+  $passwordInput.id = 'password';
+
   $signInContainer.className = 'sign-in-container';
   $signInForm.className = 'sign-in-form';
   $idBox.className = 'sign-in-form__box';
@@ -26,9 +53,17 @@ function SignInForm() {
   $signUpLink.className = 'link__sign-up';
 
   $idLabel.innerHTML = 'id';
+  $idLabel.htmlFor = 'id';
+  $idInput.setAttribute('type', 'text');
+  $idInput.setAttribute('name', 'id');
   $passwordLabel.innerHTML = 'password';
+  $passwordLabel.htmlFor = 'password';
+  $passwordInput.setAttribute('type', 'password');
+  $passwordInput.setAttribute('name', 'password');
   $submitButton.innerHTML = 'Sign in';
   $signUpLink.innerHTML = 'Create an account';
+
+  $submitButton.addEventListener('click', onSubmitButtonClicked);
 
   $idBox.appendChild($idLabel);
   $idBox.appendChild($idInput);
