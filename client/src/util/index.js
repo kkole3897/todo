@@ -1,3 +1,4 @@
 import debounce from './debounce';
+import cookie from './cookie';
 
-export { debounce };
+export { debounce, cookie };
