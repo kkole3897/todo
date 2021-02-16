@@ -15,5 +15,6 @@ module.exports = merge(common, {
         pathRewrite: { '^/api': '' },
       },
     },
+    historyApiFallback: true,
   },
 });
