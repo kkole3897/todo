@@ -1,12 +1,24 @@
 import MainPage from './pages/MainPage';
+import SignInPage from './pages/SignInPage';
+import SignUpPage from './pages/SignUpPage';
+import { cookie } from './util';
 
 function App() {
-  const app = document.createElement('div');
-  app.className = 'app';
+  const route = {
+    '/': MainPage(),
+    '/signin': SignInPage(),
+    '/signup': SignUpPage(),
+  };
 
-  app.appendChild(MainPage());
+  if (
+    window.location.pathname === '/' &&
+    (!cookie.getCookie('logged_in') || cookie.getCookie('logged_in') !== 'yes')
+  ) {
+    window.history.pushState('signin', null, '/signin');
+    return route['/signin'];
+  }
 
-  return app;
+  return route[window.location.pathname];
 }
 
 export default App;

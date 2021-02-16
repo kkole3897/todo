@@ -1,4 +1,5 @@
 import './SignInForm.css';
+import { cookie } from '../util';
 
 function SignInForm() {
   const $signInContainer = document.createElement('div');
@@ -31,7 +32,9 @@ function SignInForm() {
       if (!response.ok) {
         throw new Error(data.message);
       }
-      console.log(data);
+      cookie.setCookie('logged_in', 'yes');
+      window.history.pushState('main', null, '/');
+      window.history.go(0);
     } catch (err) {
       console.log(err.message);
     }
