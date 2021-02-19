@@ -10,9 +10,10 @@ class Board {
         updated_at DATETIME ON UPDATE CURRENT_TIMESTAMP,
         deleted_at DATETIME,
         user_id VARCHAR(20) NOT NULL,
+        is_active INT GENERATED ALWAYS AS (IF(deleted_at IS NULL, 1, NULL)) VIRTUAL INVISIBLE,
         PRIMARY KEY (id),
         FOREIGN KEY (user_id) REFERENCES user(id),
-        UNIQUE KEY unique_board_name_by_user (name, user_id)
+        UNIQUE KEY unique_board_name_by_user (name, user_id, is_active)
       );
     `;
     this.database.query(createBoardTableQuery, (err, result) => {
@@ -59,7 +60,7 @@ class Board {
     return { id };
   }
 
-  async deleteBoard({ id }) {
+  async deleteBoard(id) {
     const deleteBoardQuery = `
       UPDATE board
       SET deleted_at = CURRENT_TIMESTAMP
