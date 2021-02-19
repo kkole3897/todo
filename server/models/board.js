@@ -35,6 +35,46 @@ class Board {
   validateName(name) {
     return 0 < name.length && name.length <= 50;
   }
+
+  async getBoardsByUser(userId) {
+    const getBoardsQuery = `
+      SELECT id, name
+      FROM board
+      WHERE user_id = ? AND deleted_at IS NULL;
+    `;
+    const [result] = await this.database.query(getBoardsQuery, [userId]);
+    return result;
+  }
+
+  async getBoardById(id) {
+    const getBoardQuery = `
+      SELECT id, name
+      FROM board
+      WHERE id = ? AND deleted_at IS NULL;
+    `;
+    const [result] = await this.database.query(getBoardQuery, [id]);
+    return result;
+  }
+
+  async updateBoard({ id, name }) {
+    const updateBoardQuery = `
+      UPDATE board
+      SET name = ?
+      WHERE id = ?;
+    `;
+    await this.database.query(updateBoardQuery, [name, id]);
+    return { id };
+  }
+
+  async deleteBoard({ id }) {
+    const deleteBoardQuery = `
+      UPDATE board
+      SET deleted_at = CURRENT_TIMESTAMP
+      WHERE id = ?;
+    `;
+    await this.database.query(deleteBoardQuery, [id]);
+    return { id };
+  }
 }
 
 module.exports = Board;
