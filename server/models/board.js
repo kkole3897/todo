@@ -46,7 +46,7 @@ class Board {
       WHERE id = ? AND deleted_at IS NULL;
     `;
     const [result] = await this.database.query(getBoardQuery, [id]);
-    return result;
+    return result[0];
   }
 
   async updateBoard({ id, name }) {
