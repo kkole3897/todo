@@ -21,19 +21,12 @@ class Board {
   }
 
   async addBoard({ name, userId }) {
-    if (!this.validateName(name)) {
-      throw new Error('invalid name');
-    }
     const addBoardQuery = `
       INSERT INTO board(name, user_id)
       VALUES (?, ?);
     `;
     const [result] = await this.database.query(addBoardQuery, [name, userId]);
     return { id: result.insertId };
-  }
-
-  validateName(name) {
-    return 0 < name.length && name.length <= 50;
   }
 
   async getBoardsByUser(userId) {
