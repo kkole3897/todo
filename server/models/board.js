@@ -54,7 +54,7 @@ class Board {
     const updateBoardQuery = `
       UPDATE board
       SET name = ?
-      WHERE id = ?;
+      WHERE id = ? AND deleted_at IS NULL;
     `;
     await this.database.query(updateBoardQuery, [name, id]);
     return { id };
@@ -64,7 +64,7 @@ class Board {
     const deleteBoardQuery = `
       UPDATE board
       SET deleted_at = CURRENT_TIMESTAMP
-      WHERE id = ?;
+      WHERE id = ? AND deleted_at IS NULL;
     `;
     await this.database.query(deleteBoardQuery, [id]);
     return { id };
