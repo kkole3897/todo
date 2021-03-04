@@ -19,14 +19,19 @@
   --text-link-color: #0366d6;
 }
 
+html,
+body {
+  height: 100%;
+}
+
 button {
   outline: none;
 }
 
-.section__board {
+#root {
   display: flex;
-  justify-content: space-around;
-  padding: 1rem 0;
+  flex-direction: column;
+  height: 100%;
 }
 
 .flex {

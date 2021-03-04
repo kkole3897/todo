@@ -1,0 +1,8 @@
+.board-container {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: nowrap;
+  height: 100%;
+  padding: 1rem;
+  overflow-x: auto;
+}

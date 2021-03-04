@@ -1,9 +1,14 @@
 .board {
+  flex: 0 0 auto;
   width: 30rem;
-  height: 91vh;
+  height: 100%;
   border: 1px var(--main-border-color) solid;
   border-radius: 8px;
   background-color: var(--main-bg-color);
+}
+
+.board--mr {
+  margin-right: 1rem;
 }
 
 .board__inner {

@@ -1,3 +1,5 @@
+import './BoardContainer.css';
+
 import Board from './Board';
 
 function BoardContainer() {
@@ -23,6 +25,7 @@ function BoardContainer() {
 
   function render() {
     const $boardContainer = document.createElement('div');
+    $boardContainer.className = 'board-container';
 
     getInitialBoards().then(boards => {
       boards.map(board => {

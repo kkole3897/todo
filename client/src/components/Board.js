@@ -57,7 +57,7 @@ function Board({ title = '' }) {
   };
 
   const $board = document.createElement('div');
-  $board.className = 'board';
+  $board.className = 'board board--mr';
 
   const $boardInner = document.createElement('div');
   $boardInner.className = 'board__inner';
