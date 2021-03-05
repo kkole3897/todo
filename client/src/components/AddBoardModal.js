@@ -2,7 +2,7 @@ import './AddBoardModal.css';
 
 import CloseIcon from '../assets/close.svg';
 
-function AddBoardModal({ onClick }) {
+function AddBoardModal({ onSubmit }) {
   const closeModalHandler = event => {
     const $addBoardModal = event.target.closest('.add-board-modal');
     $addBoardModal.remove();
@@ -48,7 +48,7 @@ function AddBoardModal({ onClick }) {
     $createBoardButton.className =
       'add-board-modal__create-button add-board-modal__create-button--mt';
     $createBoardButton.innerText = 'Create board';
-    $createBoardButton.addEventListener('click', onClick);
+    $createBoardButton.addEventListener('click', onSubmit);
 
     $addBoardModal.appendChild($addBoardModalOverlay);
     $addBoardModal.appendChild($addBoardModalForm);
