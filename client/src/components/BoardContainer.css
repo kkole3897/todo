@@ -6,3 +6,18 @@
   padding: 1rem;
   overflow-x: auto;
 }
+
+.board-container__add-button {
+  width: 30rem;
+  padding: 2rem;
+  border: 1px dashed #959da5;
+  border-radius: 6px;
+  background-color: transparent;
+  color: #586069;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.board-container__add-button:hover {
+  text-decoration: underline;
+}

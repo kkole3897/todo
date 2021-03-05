@@ -27,9 +27,14 @@ function BoardContainer() {
     const $boardContainer = document.createElement('div');
     $boardContainer.className = 'board-container';
 
+    const $addButton = document.createElement('button');
+    $addButton.className = 'board-container__add-button';
+    $addButton.innerText = 'Add Board';
+
+    $boardContainer.appendChild($addButton);
     getInitialBoards().then(boards => {
       boards.map(board => {
-        $boardContainer.appendChild(Board({ title: board.name }));
+        $boardContainer.insertBefore(Board({ title: board.name }), $addButton);
       });
     });
 
