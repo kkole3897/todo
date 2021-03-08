@@ -1,85 +1,103 @@
 import './SignInForm.css';
-import { cookie } from '../util';
 
-function SignInForm() {
-  const $signInContainer = document.createElement('div');
-  const $signInForm = document.createElement('form');
-  const $idBox = document.createElement('div');
-  const $idLabel = document.createElement('label');
-  const $idInput = document.createElement('input');
-  const $passwordBox = document.createElement('div');
-  const $passwordLabel = document.createElement('label');
-  const $passwordInput = document.createElement('input');
-  const $submitButton = document.createElement('button');
-  const $signUpBox = document.createElement('div');
-  const $signUpLink = document.createElement('a');
+import { createAction } from '../lib/todox';
+import userStore from '../store/userStore';
 
-  const onSubmitButtonClicked = async event => {
+class SignInForm {
+  constructor() {
+    this.id = '';
+    this.password = '';
+
+    this.inputIdHandler = this.inputIdHandler.bind(this);
+    this.inputPasswordHandler = this.inputPasswordHandler.bind(this);
+    this.submitHandler = this.submitHandler.bind(this);
+  }
+
+  render() {
+    const element = document.createElement('div');
+    element.className = 'sign-in-container';
+    element.innerHTML = `
+      <form class='sign-in-form'>
+        <div class='sign-in-form__box'>
+          <label class='sign-in-form__label' for='id'>id</label>
+          <input id='id' class='sign-in-form__input sign-in-form__input--m' name='id' type='text' />
+        </div>
+        <div class='sign-in-form__box'>
+          <label class='sign-in-form__label' for='password'>password</label>
+          <input id='password' class='sign-in-form__input sign-in-form__input--m' name='password' type='password' />
+        </div>
+        <button class='sign-in-form__submit-button' type='submit'>Sign in</button>
+      </form>
+      <div class='box__sign-up box__sign-up--mt'>
+        <a class='link__sign-up'>Create an account</a>
+      </div>
+    `;
+
+    element.addEventListener('input', this.inputIdHandler);
+    element.addEventListener('input', this.inputPasswordHandler);
+    element.addEventListener('submit', this.submitHandler);
+
+    return element;
+  }
+
+  inputIdHandler(event) {
+    if (
+      !(
+        event.target.matches('.sign-in-form__input') &&
+        event.target.getAttribute('name') === 'id'
+      )
+    ) {
+      return;
+    }
     event.preventDefault();
-    const id = $idInput.value;
-    const password = $passwordInput.value;
-    const user = { id, password };
-    const signInURL = '/api/auth/signin';
+    const idInput = event.target;
+    this.id = idInput.value;
+  }
+
+  inputPasswordHandler(event) {
+    if (
+      !(
+        event.target.matches('.sign-in-form__input') &&
+        event.target.getAttribute('name') === 'password'
+      )
+    ) {
+      return;
+    }
+    event.preventDefault();
+    const passwordInput = event.target;
+    this.password = passwordInput.value;
+  }
+
+  async submitHandler(event) {
+    if (!event.target.closest('.sign-in-form')) {
+      return;
+    }
+    event.preventDefault();
     try {
-      const response = await fetch(signInURL, {
+      const body = {
+        id: this.id,
+        password: this.password,
+      };
+      const uri = '/api/auth/signin';
+      const response = await fetch(uri, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(user),
+        body: JSON.stringify(body),
       });
-      const data = await response.json();
+      const { message, data } = await response.json();
       if (!response.ok) {
-        throw new Error(data.message);
+        throw Error(message);
       }
-      cookie.setCookie('logged_in', 'yes');
-      window.history.pushState('main', null, '/');
-      window.history.go(0);
+      userStore.dispatch(
+        createAction('ACTION_ADD_USER', { user: { id: data.user.id } }),
+      );
+      console.log(userStore.getState());
     } catch (err) {
-      console.log(err.message);
+      alert('id 또는 password가 일치하지 않습니다.');
     }
-  };
-
-  $idInput.id = 'id';
-  $passwordInput.id = 'password';
-
-  $signInContainer.className = 'sign-in-container';
-  $signInForm.className = 'sign-in-form';
-  $idBox.className = 'sign-in-form__box';
-  $idLabel.className = 'sign-in-form__label';
-  $idInput.className = 'sign-in-form__input sign-in-form__input--m';
-  $passwordBox.className = 'sign-in-form__box';
-  $passwordLabel.className = 'sign-in-form__label';
-  $passwordInput.className = 'sign-in-form__input sign-in-form__input--m';
-  $submitButton.className = 'sign-in-form__submit-button';
-  $signUpBox.className = 'box__sign-up box__sign-up--mt';
-  $signUpLink.className = 'link__sign-up';
-
-  $idLabel.innerHTML = 'id';
-  $idLabel.htmlFor = 'id';
-  $idInput.setAttribute('type', 'text');
-  $idInput.setAttribute('name', 'id');
-  $passwordLabel.innerHTML = 'password';
-  $passwordLabel.htmlFor = 'password';
-  $passwordInput.setAttribute('type', 'password');
-  $passwordInput.setAttribute('name', 'password');
-  $submitButton.innerHTML = 'Sign in';
-  $signUpLink.innerHTML = 'Create an account';
-
-  $submitButton.addEventListener('click', onSubmitButtonClicked);
-
-  $idBox.appendChild($idLabel);
-  $idBox.appendChild($idInput);
-  $passwordBox.appendChild($passwordLabel);
-  $passwordBox.appendChild($passwordInput);
-  $signInForm.appendChild($idBox);
-  $signInForm.appendChild($passwordBox);
-  $signInForm.appendChild($submitButton);
-  $signUpBox.appendChild($signUpLink);
-  $signInContainer.appendChild($signInForm);
-  $signInContainer.appendChild($signUpBox);
-
-  return $signInContainer;
+  }
 }
 
 export default SignInForm;
