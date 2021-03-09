@@ -25,12 +25,21 @@ router.get('/:boardId', async (req, res) => {
 router.post('/', async (req, res) => {
   const { user } = req;
   const { name } = req.body;
-  const result = await boardService.createBoard({ userId: user.id, name });
-  res.status(201).json({
-    success: true,
-    message: 'Successfully create board.',
-    data: result,
-  });
+  try {
+    const result = await boardService.createBoard({ userId: user.id, name });
+    res.status(201).json({
+      success: true,
+      message: 'Successfully create board.',
+      data: result,
+    });
+    return;
+  } catch {
+    res.status(422).json({
+      success: false,
+      message: 'Duplicated board name.',
+      data: {},
+    });
+  }
 });
 
 router.put('/:boardId', async (req, res) => {
