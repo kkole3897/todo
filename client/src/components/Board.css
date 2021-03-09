@@ -5,6 +5,7 @@
   border: 1px var(--main-border-color) solid;
   border-radius: 8px;
   background-color: var(--main-bg-color);
+  overflow-y: auto;
 }
 
 .board--mr {
