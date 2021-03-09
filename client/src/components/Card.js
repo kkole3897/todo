@@ -5,55 +5,58 @@ import NoteIcon from '../assets/note.svg';
 
 import CardDropdown from './CardDropdown';
 
-function Card({ content, onRemove }) {
-  let isDropdownOpened = false;
+class Card {
+  constructor({ content, author }) {
+    this.content = content;
+    this.author = author;
+  }
 
-  const clickMoreButtonHandler = () => {
-    if (!isDropdownOpened) {
-      $moreButton.appendChild($dropdown);
-    } else {
-      $dropdown.remove();
+  render() {
+    const element = document.createElement('div');
+    element.className = 'card card--my';
+
+    element.innerHTML = `
+      <div class='card__inner--relative'>
+        <div class='card__icon'>
+          <img src=${NoteIcon} />
+        </div>
+        <div class='card__body'>
+          <div class='card__body--content'>${this.content}</div>
+          <div class='card__body--author'>${this.author}</div>
+        </div>
+        <div class='card__more-button'>
+          <img src=${MoreIcon} />
+        </div>
+      </div>
+    `;
+
+    element.addEventListener('click', this.clickMoreButtonHandler);
+
+    return element;
+  }
+
+  clickMoreButtonHandler(event) {
+    if (!event.target.closest('.card__more-button')) {
+      return;
     }
-    isDropdownOpened = !isDropdownOpened;
-  };
+    event.preventDefault();
+    const cardDropdown = new CardDropdown();
+    const moreButton = event.target.closest('.card__more-button');
+    moreButton.appendChild(cardDropdown.render());
+  }
 
-  const $card = document.createElement('div');
-  $card.className = 'card card--my';
+  // const clickMoreButtonHandler = () => {
+  //   if (!isDropdownOpened) {
+  //     $moreButton.appendChild($dropdown);
+  //   } else {
+  //     $dropdown.remove();
+  //   }
+  //   isDropdownOpened = !isDropdownOpened;
+  // };
 
-  const $cardInner = document.createElement('div');
-  $cardInner.className = 'card__inner--relative';
+  // $moreButton.addEventListener('click', clickMoreButtonHandler);
 
-  const $cardIcon = document.createElement('div');
-  $cardIcon.className = 'card__icon';
-  $cardIcon.innerHTML = `<img src='${NoteIcon}' />`;
-
-  const $cardBody = document.createElement('div');
-  $cardBody.className = 'card__body';
-
-  const $cardContent = document.createElement('div');
-  $cardContent.className = 'card__body--content';
-  $cardContent.innerHTML = content;
-
-  const $cardAuthor = document.createElement('div');
-  $cardAuthor.className = 'card__body--author';
-  $cardAuthor.innerHTML = 'Added By test';
-
-  $cardBody.appendChild($cardContent);
-  $cardBody.appendChild($cardAuthor);
-
-  const $moreButton = document.createElement('div');
-  $moreButton.className = 'card__more-button';
-  $moreButton.innerHTML = `<img src='${MoreIcon}' />`;
-  $moreButton.addEventListener('click', clickMoreButtonHandler);
-
-  const $dropdown = CardDropdown({ onRemove });
-
-  $cardInner.appendChild($cardIcon);
-  $cardInner.appendChild($cardBody);
-  $cardInner.append($moreButton);
-  $card.appendChild($cardInner);
-
-  return $card;
+  // const $dropdown = CardDropdown({ onRemove });
 }
 
 export default Card;

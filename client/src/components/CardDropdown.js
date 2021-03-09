@@ -1,30 +1,31 @@
 import './CardDropdown.css';
 
-function CardDropdown({ onRemove }) {
-  const $dropdown = document.createElement('div');
-  $dropdown.className = 'card__dropdown';
+class CardDropdown {
+  render() {
+    const element = document.createElement('div');
+    element.className = 'card__dropdown';
 
-  const $dropdownOverlay = document.createElement('div');
-  $dropdownOverlay.className = 'card__dropdown--overlay';
+    element.innerHTML = `
+      <div class='card__dropdown--overlay'></div>
+      <div class='card__dropdown--menu'>
+        <div class='card__dropdown--menu-item'>Edit</div>
+        <div class='card__dropdown--menu-item'>Delete</div>
+      </div>
+    `;
 
-  const $dropdownMenu = document.createElement('div');
-  $dropdownMenu.className = 'card__dropdown--menu';
+    element.addEventListener('click', this.closeDropdownHandler);
 
-  const $editMenu = document.createElement('div');
-  $editMenu.className = 'card__dropdown--menu-item';
-  $editMenu.innerHTML = 'Edit';
+    return element;
+  }
 
-  const $deleteMenu = document.createElement('div');
-  $deleteMenu.className = 'card__dropdown--menu-item';
-  $deleteMenu.innerHTML = 'Delete';
-  $deleteMenu.addEventListener('click', onRemove);
-
-  $dropdownMenu.appendChild($editMenu);
-  $dropdownMenu.appendChild($deleteMenu);
-  $dropdown.appendChild($dropdownOverlay);
-  $dropdown.appendChild($dropdownMenu);
-
-  return $dropdown;
+  closeDropdownHandler(event) {
+    if (!event.target.closest('.card__dropdown--overlay')) {
+      return;
+    }
+    event.preventDefault();
+    const cardDropdown = event.target.closest('.card__dropdown');
+    cardDropdown.remove();
+  }
 }
 
 export default CardDropdown;

@@ -1,33 +1,76 @@
 import './AddCardForm.css';
 
-function AddCardForm({ $textArea, $addButton, onSubmit, onCancel, onChanged }) {
-  const $addCardForm = document.createElement('form');
-  $addCardForm.className = 'add-card-form add-card-form--m';
+import Card from './Card';
 
-  const $buttonContainer = document.createElement('div');
-  $buttonContainer.className =
-    'add-card-form__button-container add-card-form__button-container--m';
+class AddCardForm {
+  constructor({ setOpened, addCard }) {
+    this.state = {
+      text: '',
+    };
 
-  $textArea.addEventListener('input', onChanged);
+    this.setOpened = setOpened;
+    this.addCard = addCard;
 
-  $addButton.className =
-    'add-card-form__add-button add-card-form__add-button--mr';
-  $addButton.innerHTML = 'Add';
-  $addButton.disabled = true;
-  $addButton.addEventListener('click', onSubmit);
+    this.inputTextAreaHandler = this.inputTextAreaHandler.bind(this);
+    this.clickCancelButtonHandler = this.clickCancelButtonHandler.bind(this);
+    this.submitAddCardHandler = this.submitAddCardHandler.bind(this);
+  }
 
-  const $cancelButton = document.createElement('button');
-  $cancelButton.className = 'add-card-form__cancel-button';
-  $cancelButton.innerHTML = 'Cancel';
+  render() {
+    const element = document.createElement('form');
+    element.className = 'add-card-form add-card-form--m';
+    element.innerHTML = `
+      <textarea class='add-card-form__textarea'></textarea>
+      <div class='add-card-form__button-container add-card-form__button-container--m'>
+        <button 
+          class='add-card-form__add-button add-card-form__add-button--mr' 
+          disabled
+        >
+          Add
+        </button>
+        <button class='add-card-form__cancel-button'>Cancel</button>
+      </div>
+    `;
 
-  $cancelButton.addEventListener('click', onCancel);
+    element.addEventListener('input', this.inputTextAreaHandler);
+    element.addEventListener('click', this.clickCancelButtonHandler);
+    element.addEventListener('submit', this.submitAddCardHandler);
 
-  $buttonContainer.appendChild($addButton);
-  $buttonContainer.appendChild($cancelButton);
-  $addCardForm.appendChild($textArea);
-  $addCardForm.appendChild($buttonContainer);
+    return element;
+  }
 
-  return $addCardForm;
+  inputTextAreaHandler(event) {
+    if (!event.target.matches('.add-card-form__textarea')) {
+      return;
+    }
+    event.preventDefault();
+    this.state.text = event.target.value;
+    const addCardForm = event.target.closest('.add-card-form');
+    const addButton = addCardForm.querySelector('.add-card-form__add-button');
+    addButton.disabled = this.state.text.length <= 0;
+  }
+
+  clickCancelButtonHandler(event) {
+    if (!event.target.matches('.add-card-form__cancel-button')) {
+      return;
+    }
+    event.preventDefault();
+    const addCardForm = event.target.closest('.add-card-form');
+    this.setOpened(false);
+    addCardForm.parentNode.removeChild(addCardForm);
+  }
+
+  submitAddCardHandler(event) {
+    if (!event.target.closest('.add-card-form')) {
+      return;
+    }
+    event.preventDefault();
+    const card = new Card({ content: this.state.text, author: '테스트' });
+    const addCardForm = event.target.closest('.add-card-form');
+    addCardForm.insertAdjacentElement('afterend', card.render());
+    this.setOpened(false);
+    addCardForm.parentNode.removeChild(addCardForm);
+  }
 }
 
 export default AddCardForm;

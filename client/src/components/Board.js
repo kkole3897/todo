@@ -10,6 +10,7 @@ class Board {
   constructor({ id, name }) {
     this.id = id;
     this.name = name;
+    this.isAddCardFormOpened = false;
 
     this.clickOpenCardFormButtonHandler = this.clickOpenCardFormButtonHandler.bind(
       this,
@@ -53,7 +54,7 @@ class Board {
     event.preventDefault();
     const board = event.target.closest('.board');
     const boardBody = board.querySelector('.board__body');
-    if (!this.state.isAddCardFormOpened) {
+    if (!this.isAddCardFormOpened) {
       const addCardForm = new AddCardForm({
         setOpened: this.setAddCardFormOpened,
       });
@@ -66,80 +67,8 @@ class Board {
   }
 
   setAddCardFormOpened(value) {
-    this.state.isAddCardFormOpened = value;
+    this.isAddCardFormOpened = value;
   }
-
-  createNewCard() {
-    return () => {};
-  }
-
-  // $openCardFormButton.addEventListener('click', clickPlusButtonHandler);
-
-  // let isAddCardFormOpened = false;
-
-  // const clickPlusButtonHandler = event => {
-  //   if (isAddCardFormOpened) {
-  //     $addCardForm.remove();
-  //   } else {
-  //     const parent = event.target.closest('.board__inner');
-  //     parent.insertBefore($addCardForm, $boardBody);
-  //   }
-  //   isAddCardFormOpened = !isAddCardFormOpened;
-  // };
-
-  // const clickAddButtonHandler = event => {
-  //   event.preventDefault();
-  //   const cardText = $textArea.value;
-  //   $textArea.value = '';
-  //   const $card = Card({ content: cardText, onRemove: removeCardHandler });
-  //   count += 1;
-  //   isAddCardFormOpened = !isAddCardFormOpened;
-  //   $cardCount.innerHTML = count;
-  //   $addButton.disabled = true;
-  //   $addCardForm.remove();
-  //   $boardBody.prepend($card);
-  // };
-
-  // const clickCancleButtonHandler = event => {
-  //   event.preventDefault();
-  //   $textArea.value = '';
-  //   isAddCardFormOpened = !isAddCardFormOpened;
-  //   $addButton.disabled = true;
-  //   $addCardForm.remove();
-  // };
-
-  // const inputTextAreaHandler = event => {
-  //   if ($textArea.value.length > 0) {
-  //     $addButton.disabled = false;
-  //   } else {
-  //     $addButton.disabled = true;
-  //   }
-  // };
-
-  // const removeCardHandler = event => {
-  //   const $card = event.target.closest('.card');
-  //   $card.remove();
-  //   count -= 1;
-  //   $cardCount.innerHTML = count;
-  // };
-
-  // $cardCount.innerHTML = count;
-
-  // $title.innerHTML = title;
-
-  // const $textArea = document.createElement('textarea');
-  // $textArea.className = 'add-card-form__textarea';
-  // $textArea.placeholder = 'Enter a note';
-
-  // const $addButton = document.createElement('button');
-
-  // const $addCardForm = AddCardForm({
-  //   $textArea,
-  //   $addButton,
-  //   onSubmit: clickAddButtonHandler,
-  //   onCancel: clickCancleButtonHandler,
-  //   onChanged: inputTextAreaHandler,
-  // });
 }
 
 export default Board;
