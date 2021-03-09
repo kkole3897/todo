@@ -92,7 +92,7 @@ class AddBoardModal {
         }),
       );
     } catch (err) {
-      alert('새로운 Board를 만드는 데 실패했습니다.');
+      alert('동일한 이름으로 Board를 생성할 수 없습니다.');
     }
     this.remove();
   }
