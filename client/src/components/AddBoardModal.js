@@ -1,69 +1,108 @@
-import './AddBoardModal.css';
+import { createAction } from '../lib/todox';
+import boardStore from '../store/boardStore';
 
+import './AddBoardModal.css';
 import CloseIcon from '../assets/close.svg';
 
-function AddBoardModal({ onSubmit }) {
-  const closeModalHandler = event => {
-    const $addBoardModal = event.target.closest('.add-board-modal');
-    $addBoardModal.remove();
-  };
+class AddBoardModal {
+  constructor() {
+    this.name = '';
 
-  function render() {
-    const $addBoardModal = document.createElement('div');
-    $addBoardModal.className = 'add-board-modal';
-
-    const $addBoardModalOverlay = document.createElement('div');
-    $addBoardModalOverlay.className = 'add-board-modal__overlay';
-    $addBoardModalOverlay.addEventListener('click', closeModalHandler);
-
-    const $addBoardModalForm = document.createElement('div');
-    $addBoardModalForm.className = 'add-board-modal__form';
-
-    const $modalHeader = document.createElement('div');
-    $modalHeader.className = 'add-board-modal__header';
-
-    const $modalTitle = document.createElement('div');
-    $modalTitle.className = 'add-board-modal__title';
-    $modalTitle.innerText = 'Add a board';
-
-    const $modalCloseButton = document.createElement('div');
-    $modalCloseButton.className = 'add-board-modal__close-button';
-    $modalCloseButton.innerHTML = `<img src='${CloseIcon}' />`;
-    $modalCloseButton.addEventListener('click', closeModalHandler);
-
-    const $modalBody = document.createElement('form');
-    $modalBody.className = 'add-board-modal__body';
-
-    const $addBoardInputLabel = document.createElement('label');
-    $addBoardInputLabel.className = 'add-board-modal__label';
-    $addBoardInputLabel.innerText = 'Board name';
-
-    const $addBoardTextInput = document.createElement('input');
-    $addBoardTextInput.className =
-      'add-board-modal__text-input add-board-modal__text-input--m';
-    $addBoardTextInput.type = 'text';
-    $addBoardTextInput.placeholder = 'Enter a board name';
-
-    const $createBoardButton = document.createElement('button');
-    $createBoardButton.className =
-      'add-board-modal__create-button add-board-modal__create-button--mt';
-    $createBoardButton.innerText = 'Create board';
-    $createBoardButton.addEventListener('click', onSubmit);
-
-    $addBoardModal.appendChild($addBoardModalOverlay);
-    $addBoardModal.appendChild($addBoardModalForm);
-    $addBoardModalForm.appendChild($modalHeader);
-    $modalHeader.appendChild($modalTitle);
-    $modalHeader.appendChild($modalCloseButton);
-    $addBoardModalForm.appendChild($modalBody);
-    $modalBody.appendChild($addBoardInputLabel);
-    $modalBody.appendChild($addBoardTextInput);
-    $modalBody.appendChild($createBoardButton);
-
-    return $addBoardModal;
+    this.inputBoardNameHandler = this.inputBoardNameHandler.bind(this);
+    this.closeModalHandler = this.closeModalHandler.bind(this);
+    this.submitHandler = this.submitHandler.bind(this);
   }
 
-  return render();
+  render() {
+    const element = document.createElement('div');
+    element.className = 'add-board-modal__overlay';
+    element.innerHTML = `
+      <div class='add-board-modal'>
+        <div class='add-board-modal__header'>
+          <div class='add-board-modal__title'>Add a board</div>
+          <div class='add-board-modal__close-button'>
+            <img src=${CloseIcon} />
+          </div>
+        </div>
+        <form class='add-board-modal__body' for='name'>
+          <label class='add-board-modal__label'>Board name</label>
+          <input
+            id='name'
+            class='add-board-modal__text-input add-board-modal__text-input--m'
+            type='text'
+            placeholder='Enter a board name'
+            name='name'
+          />
+          <button class='add-board-modal__create-button add-board-modal__create-button--mt'>
+            Create board
+          </button>
+        </form>
+      </div>
+    `;
+
+    element.addEventListener('input', this.inputBoardNameHandler);
+    element.addEventListener('click', this.closeModalHandler);
+    element.addEventListener('submit', this.submitHandler);
+
+    return element;
+  }
+
+  inputBoardNameHandler(event) {
+    if (!event.target.matches('.add-board-modal__text-input')) {
+      return;
+    }
+    event.preventDefault();
+    this.name = event.target.value;
+  }
+
+  closeModalHandler(event) {
+    if (
+      !(
+        event.target.matches('.add-board-modal__overlay') ||
+        event.target.closest('.add-board-modal__close-button')
+      )
+    ) {
+      return;
+    }
+    this.remove();
+  }
+
+  async submitHandler(event) {
+    if (!event.target.closest('.add-board-modal__body')) {
+      return;
+    }
+    event.preventDefault();
+    const uri = '/api/boards';
+    const body = { name: this.name };
+    try {
+      const response = await fetch(uri, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      });
+      const { data, message } = await response.json();
+      if (!response.ok) {
+        throw new Error(message);
+      }
+      boardStore.dispatch(
+        createAction('ACTION_ADD_BOARD', {
+          board: { id: data.id, name: this.name },
+        }),
+      );
+    } catch (err) {
+      alert('새로운 Board를 만드는 데 실패했습니다.');
+    }
+    this.remove();
+  }
+
+  remove() {
+    const addBoardModalOverlay = document.querySelector(
+      '.add-board-modal__overlay',
+    );
+    addBoardModalOverlay.parentNode.removeChild(addBoardModalOverlay);
+  }
 }
 
 export default AddBoardModal;

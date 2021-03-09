@@ -1,94 +1,51 @@
+import boardStore from '../store/boardStore';
+
 import './BoardContainer.css';
-
-import Board from './Board';
 import AddBoardModal from './AddBoardModal';
+import Board from './Board';
 
-function BoardContainer() {
-  const clickCreateBoardHandler = async event => {
-    event.preventDefault();
-    const $boardContainer = event.target.closest('.board-container');
-    const $addBoardButton = $boardContainer.querySelector(
-      '.board-container__add-button',
+class BoardContainer {
+  constructor() {
+    this.clickAddBoardButtonHandler = this.clickAddBoardButtonHandler.bind(
+      this,
     );
-    const $addBoardModal = $boardContainer.querySelector('.add-board-modal');
-    const $input = $addBoardModal.querySelector('.add-board-modal__text-input');
-
-    const title = $input.value;
-
-    try {
-      const uri = '/api/boards';
-      const body = {
-        name: title,
-      };
-      const response = await fetch(uri, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message);
-      }
-    } catch (err) {
-      console.log(err.message);
-      return;
-    }
-
-    $boardContainer.insertBefore(Board({ title }), $addBoardButton);
-
-    $addBoardModal.remove();
-  };
-  const clickAddBoardButtonHandler = async event => {
-    event.preventDefault();
-    const $boardContainer = event.target.closest('.board-container');
-
-    $boardContainer.appendChild(
-      AddBoardModal({ onSubmit: clickCreateBoardHandler }),
-    );
-  };
-
-  async function getInitialBoards() {
-    const uri = '/api/boards';
-    try {
-      const response = await fetch(uri, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message);
-      }
-      const boards = data.data;
-      return boards;
-    } catch (err) {
-      console.log(err.message);
-    }
+    boardStore.subscribe(this.createNewBoard, this);
   }
 
-  function render() {
-    const $boardContainer = document.createElement('div');
-    $boardContainer.className = 'board-container';
+  render() {
+    const element = document.createElement('div');
+    element.className = 'board-container';
 
-    const $addButton = document.createElement('button');
-    $addButton.className = 'board-container__add-button';
-    $addButton.innerText = 'Add Board';
-    $addButton.addEventListener('click', clickAddBoardButtonHandler);
+    const { boards } = boardStore.getState();
 
-    $boardContainer.appendChild($addButton);
-    getInitialBoards().then(boards => {
-      boards.map(board => {
-        $boardContainer.insertBefore(Board({ title: board.name }), $addButton);
-      });
+    boards.forEach(board => {
+      element.appendChild(new Board(board).render());
     });
 
-    return $boardContainer;
+    const button = `<button class='board-container__add-button'>Add Board</button>`;
+    element.insertAdjacentHTML('beforeend', button);
+
+    element.addEventListener('click', this.clickAddBoardButtonHandler);
+
+    return element;
   }
 
-  return render();
+  clickAddBoardButtonHandler(event) {
+    if (!event.target.closest('.board-container__add-button')) {
+      return;
+    }
+    event.preventDefault();
+    const boardContainer = document.querySelector('.board-container');
+    const addBoardModal = new AddBoardModal();
+    boardContainer.appendChild(addBoardModal.render());
+  }
+
+  createNewBoard() {
+    const target = document.querySelector('.board-container__add-button');
+    const { boards } = boardStore.getState();
+    const board = boards[boards.length - 1];
+    target.insertAdjacentElement('beforebegin', new Board(board).render());
+  }
 }
 
 export default BoardContainer;
