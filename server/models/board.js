@@ -32,9 +32,22 @@ class Board {
 
   async getBoardsByUser(userId) {
     const getBoardsQuery = `
-      SELECT id, name
-      FROM board
-      WHERE user_id = ? AND deleted_at IS NULL;
+      SELECT
+        board.id boardId,
+        name,
+        IF (COUNT(card.id) = 0, JSON_ARRAY(),
+          JSON_ARRAYAGG(
+            JSON_OBJECT(
+              'cardId', card.id,
+              'description', description,
+              'author', card.user_id
+            )
+          )
+        ) cards
+      FROM board LEFT JOIN card
+        ON board.id = card.board_id
+      WHERE board.user_id = ? AND board.deleted_at IS NULL AND card.deleted_at IS NULL
+      GROUP BY board.id;
     `;
     const [result] = await this.database.query(getBoardsQuery, [userId]);
     return result;
@@ -42,12 +55,25 @@ class Board {
 
   async getBoardById(id) {
     const getBoardQuery = `
-      SELECT id, name
-      FROM board
-      WHERE id = ? AND deleted_at IS NULL;
+      SELECT
+        board.id boardId,
+        name,
+        IF(COUNT(card.id) = 0, JSON_ARRAY(),
+          JSON_ARRAYAGG(
+            JSON_OBJECT(
+              'cardId', card.id,
+              'description', description,
+              'author', card.user_id
+            )
+          )
+        ) cards
+      FROM board LEFT JOIN card
+        ON board.id = card.board_id
+      WHERE board.id = ? AND board.deleted_at IS NULL AND card.deleted_at IS NULL
+      GROUP BY board.id;
     `;
     const [result] = await this.database.query(getBoardQuery, [id]);
-    return result[0];
+    return { ...result[0] };
   }
 
   async updateBoard({ id, name }) {
