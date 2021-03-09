@@ -1,8 +1,5 @@
 import './SignInForm.css';
 
-import { createAction } from '../lib/todox';
-import userStore from '../store/userStore';
-
 class SignInForm {
   constructor() {
     this.id = '';
@@ -86,14 +83,11 @@ class SignInForm {
         },
         body: JSON.stringify(body),
       });
-      const { message, data } = await response.json();
+      const { message } = await response.json();
       if (!response.ok) {
         throw Error(message);
       }
-      userStore.dispatch(
-        createAction('ACTION_ADD_USER', { user: { id: data.user.id } }),
-      );
-      console.log(userStore.getState());
+      document.location.href = '/';
     } catch (err) {
       alert('id 또는 password가 일치하지 않습니다.');
     }

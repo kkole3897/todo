@@ -1,24 +1,19 @@
+import userStore from './store/userStore';
+
 import MainPage from './pages/MainPage';
 import SignInPage from './pages/SignInPage';
-import SignUpPage from './pages/SignUpPage';
-import { cookie } from './util';
 
-function App() {
-  const route = {
-    '/': MainPage(),
-    '/signin': SignInPage(),
-    '/signup': SignUpPage(),
-  };
+class App {
+  render() {
+    const { user } = userStore.getState();
+    if (user) {
+      const mainPage = new MainPage();
+      return mainPage.render();
+    }
 
-  if (
-    window.location.pathname === '/' &&
-    (!cookie.getCookie('logged_in') || cookie.getCookie('logged_in') !== 'yes')
-  ) {
-    window.history.pushState('signin', null, '/signin');
-    return route['/signin'];
+    const signInPage = new SignInPage();
+    return signInPage.render();
   }
-
-  return route[window.location.pathname];
 }
 
 export default App;
