@@ -1,28 +1,18 @@
 import './Header.css';
 
-function Header() {
-  const $header = document.createElement('header');
-  $header.className = 'header';
+class Header {
+  render() {
+    const element = document.createElement('header');
+    element.className = 'header';
+    element.innerHTML = `
+        <div class='header__inner'>
+          <div class='header__logo'>TODO 서비스</div>
+          <div class='header__menu'>menu</div>
+        </div>
+    `;
 
-  const $headerInner = document.createElement('div');
-  $headerInner.className = 'header__inner';
-
-  const $headerLogo = document.createElement('div');
-  $headerLogo.className = 'header__logo';
-  $headerLogo.innerHTML = 'TODO 서비스';
-  $headerLogo.addEventListener('click', () => {
-    window.history.pushState({}, '', '/');
-  });
-
-  const $headerMenu = document.createElement('div');
-  $headerMenu.className = 'header__menu';
-  $headerMenu.innerHTML = 'menu';
-
-  $headerInner.appendChild($headerLogo);
-  $headerInner.appendChild($headerMenu);
-  $header.appendChild($headerInner);
-
-  return $header;
+    return element;
+  }
 }
 
 export default Header;

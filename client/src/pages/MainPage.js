@@ -1,16 +1,19 @@
+import { createAction } from '../lib/todox';
+import boardStore from '../store/boardStore';
+
 import Header from '../components/Header';
 import BoardContainer from '../components/BoardContainer';
 
-function MainPage() {
-  function render() {
+class MainPage {
+  render() {
     const fragment = document.createDocumentFragment();
-    fragment.appendChild(Header());
-    fragment.appendChild(BoardContainer());
+    const header = new Header();
+    const boardContainer = new BoardContainer();
+    fragment.appendChild(header.render());
+    fragment.appendChild(boardContainer.render());
 
     return fragment;
   }
-
-  return render();
 }
 
 export default MainPage;
