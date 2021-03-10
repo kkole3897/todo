@@ -1,8 +1,6 @@
-const { boardModel } = require('../models');
+const { boardModel, cardModel } = require('../models');
 
 class Board {
-  constructor() {}
-
   async readBoards(userId) {
     try {
       const boards = await boardModel.getBoardsByUser(userId);
@@ -50,6 +48,8 @@ class Board {
   async deleteBoard(id) {
     try {
       const result = await boardModel.deleteBoard(id);
+      await cardModel.removeCardsInBoard(id);
+
       return { ...result };
     } catch (err) {
       throw err;

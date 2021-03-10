@@ -105,6 +105,19 @@ class Card {
       return { ...row };
     });
   }
+
+  async removeCardsInBoard(boardId) {
+    const removeCardsInBoardQuery = `
+      UPDATE card
+      SET deleted_at = CURRENT_TIMESTAMP
+      WHERE board_id = ? AND deleted_at IS NULL;
+    `;
+    try {
+      await this.database.query(removeCardsInBoardQuery, [boardId]);
+    } catch (err) {
+      throw err;
+    }
+  }
 }
 
 module.exports = Card;
