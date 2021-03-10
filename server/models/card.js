@@ -9,10 +9,11 @@ class Card {
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
         updated_at DATETIME ON UPDATE CURRENT_TIMESTAMP,
         deleted_at DATETIME,
-        user_id VARCHAR(20) NOT NULL,
+        author VARCHAR(20) NOT NULL,
         board_id INT NOT NULL,
         PRIMARY KEY (id),
-        FOREIGN KEY (user_id, board_id) REFERENCES board(user_id, id)
+        FOREIGN KEY (board_id) REFERENCES board(id),
+        FOREIGN KEY (author) REFERENCES user(id)
       );
     `;
     this.database.query(createCardTableQuery, (err, result) => {
@@ -20,17 +21,17 @@ class Card {
     });
   }
 
-  async addCard({ description, userId, boardId }) {
+  async addCard({ description, author, boardId }) {
     if (!this.validateDescription(description)) {
       throw new Error('invalid description');
     }
     const addCardQuery = `
-      INSERT INTO card(description, user_id, board_id)
+      INSERT INTO card(description, author, board_id)
       VALUES (?, ?, ?);
     `;
     const [result] = await this.database.query(addCardQuery, [
       description,
-      userId,
+      author,
       boardId,
     ]);
     return { id: result.insertId };
@@ -86,7 +87,7 @@ class Card {
 
   async getCard(cardId) {
     const getCardQuery = `
-      SELECT id, description, user_id userId, board_id boardId
+      SELECT id, description, author, board_id boardId
       FROM card
       WHERE id = ? AND deleted_at IS NULL;
     `;
@@ -96,7 +97,7 @@ class Card {
 
   async getCards(boardId) {
     const getCardsQuery = `
-      SELECT id, description, user_id userId, board_id boardId
+      SELECT id, description, author, board_id boardId
       FROM card
       WHERE board_id = ? AND deleted_at IS NULL;
     `;

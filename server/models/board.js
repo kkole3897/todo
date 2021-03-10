@@ -40,7 +40,7 @@ class Board {
             JSON_OBJECT(
               'cardId', card.id,
               'description', description,
-              'author', card.user_id
+              'author', author
             )
           )
         ) cards
@@ -63,7 +63,7 @@ class Board {
             JSON_OBJECT(
               'cardId', card.id,
               'description', description,
-              'author', card.user_id
+              'author', card.author
             )
           )
         ) cards
