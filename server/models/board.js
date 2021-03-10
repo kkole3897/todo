@@ -33,7 +33,7 @@ class Board {
   async getBoardsByUser(userId) {
     const getBoardsQuery = `
       SELECT
-        board.id boardId,
+        board.id id,
         name,
         COUNT(card.id) numberOfCards
       FROM board LEFT JOIN card
@@ -48,7 +48,7 @@ class Board {
   async getBoardById(id) {
     const getBoardQuery = `
       SELECT
-        board.id boardId,
+        board.id id,
         name,
         COUNT(card.id) numberOfCards
       FROM board LEFT JOIN card
