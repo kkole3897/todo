@@ -35,15 +35,7 @@ class Board {
       SELECT
         board.id boardId,
         name,
-        IF (COUNT(card.id) = 0, JSON_ARRAY(),
-          JSON_ARRAYAGG(
-            JSON_OBJECT(
-              'cardId', card.id,
-              'description', description,
-              'author', author
-            )
-          )
-        ) cards
+        COUNT(card.id) numberOfCards
       FROM board LEFT JOIN card
         ON board.id = card.board_id
       WHERE board.user_id = ? AND board.deleted_at IS NULL AND card.deleted_at IS NULL
@@ -58,15 +50,7 @@ class Board {
       SELECT
         board.id boardId,
         name,
-        IF(COUNT(card.id) = 0, JSON_ARRAY(),
-          JSON_ARRAYAGG(
-            JSON_OBJECT(
-              'cardId', card.id,
-              'description', description,
-              'author', card.author
-            )
-          )
-        ) cards
+        COUNT(card.id) numberOfCards
       FROM board LEFT JOIN card
         ON board.id = card.board_id
       WHERE board.id = ? AND board.deleted_at IS NULL AND card.deleted_at IS NULL
