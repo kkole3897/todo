@@ -5,8 +5,6 @@ const { userModel } = require('../models');
 const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS) || 10;
 
 class Auth {
-  constructor() {}
-
   async signUp(user) {
     try {
       if (!this.validateId(user.id)) {
