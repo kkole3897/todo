@@ -6,6 +6,10 @@ import Board from './Board';
 
 class BoardContainer {
   constructor() {
+    this.element = document.createElement('div');
+
+    this.boards = boardStore.getState().boards;
+
     this.clickAddBoardButtonHandler = this.clickAddBoardButtonHandler.bind(
       this,
     );
@@ -13,21 +17,18 @@ class BoardContainer {
   }
 
   render() {
-    const element = document.createElement('div');
-    element.className = 'board-container';
+    this.element.className = 'board-container';
 
-    const { boards } = boardStore.getState();
-
-    boards.forEach(board => {
-      element.appendChild(new Board(board).render());
+    this.boards.forEach(board => {
+      this.element.appendChild(new Board(board).render());
     });
 
     const button = `<button class='board-container__add-button'>Add Board</button>`;
-    element.insertAdjacentHTML('beforeend', button);
+    this.element.insertAdjacentHTML('beforeend', button);
 
-    element.addEventListener('click', this.clickAddBoardButtonHandler);
+    this.element.addEventListener('click', this.clickAddBoardButtonHandler);
 
-    return element;
+    return this.element;
   }
 
   clickAddBoardButtonHandler(event) {
@@ -41,9 +42,13 @@ class BoardContainer {
   }
 
   createNewBoard() {
-    const target = document.querySelector('.board-container__add-button');
     const { boards } = boardStore.getState();
-    const board = boards[boards.length - 1];
+    if (boards.length === this.boards.length) {
+      return;
+    }
+    this.boards = boards;
+    const target = this.element.querySelector('.board-container__add-button');
+    const board = this.boards[this.boards.length - 1];
     target.insertAdjacentElement('beforebegin', new Board(board).render());
   }
 }
