@@ -32,14 +32,9 @@ class Board {
 
   async getBoardsByUser(userId) {
     const getBoardsQuery = `
-      SELECT
-        board.id id,
-        name,
-        COUNT(card.id) numberOfCards
-      FROM board LEFT JOIN card
-        ON board.id = card.board_id
-      WHERE board.user_id = ? AND board.deleted_at IS NULL AND card.deleted_at IS NULL
-      GROUP BY board.id;
+      SELECT id, name
+      FROM board
+      WHERE user_id = ? AND deleted_at IS NULL;
     `;
     const [result] = await this.database.query(getBoardsQuery, [userId]);
     return result;
@@ -47,14 +42,9 @@ class Board {
 
   async getBoardById(id) {
     const getBoardQuery = `
-      SELECT
-        board.id id,
-        name,
-        COUNT(card.id) numberOfCards
-      FROM board LEFT JOIN card
-        ON board.id = card.board_id
-      WHERE board.id = ? AND board.deleted_at IS NULL AND card.deleted_at IS NULL
-      GROUP BY board.id;
+      SELECT id, name
+      FROM board
+      WHERE id = ? AND deleted_at IS NULL;
     `;
     const [result] = await this.database.query(getBoardQuery, [id]);
     return { ...result[0] };
