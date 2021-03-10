@@ -3,6 +3,11 @@ const { cardModel } = require('../models');
 class Card {
   async createCard({ description, author, boardId }) {
     try {
+      if (this.validateDescription(description)) {
+        throw new Error(
+          'Description of card must be between 1 to 500 characters.',
+        );
+      }
       const result = cardModel.addCard({ description, author, boardId });
       return result;
     } catch (err) {
@@ -30,6 +35,11 @@ class Card {
 
   async updateDescription({ cardId, description }) {
     try {
+      if (this.validateDescription(description)) {
+        throw new Error(
+          'Description of card must be between 1 to 500 characters.',
+        );
+      }
       const result = cardModel.updateDescription({ cardId, description });
       return result;
     } catch (err) {
@@ -53,6 +63,10 @@ class Card {
     } catch (err) {
       throw err;
     }
+  }
+
+  async validateDescription(description) {
+    return 0 < description.length && description <= 500;
   }
 }
 
