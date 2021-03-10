@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
     res.status(200).json({
       success: true,
       message: `Successfully get cards in board id:${boardId}.`,
-      data: { cards },
+      data: cards,
     });
   } catch {
     res.status(404).json({
@@ -29,7 +29,7 @@ router.get('/:cardId', async (req, res) => {
     res.status(200).json({
       success: true,
       message: `Successfully get card id:${cardId} in board id:${boardId}.`,
-      data: { card },
+      data: card,
     });
   } catch {
     res.status(404).json({
