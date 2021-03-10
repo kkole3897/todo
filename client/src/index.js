@@ -2,6 +2,7 @@ import { createAction } from './lib/todox';
 
 import userStore from './store/userStore';
 import boardStore from './store/boardStore';
+import cardStore from './store/cardStore';
 
 import './reset.css';
 import './index.css';
@@ -14,9 +15,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   await initUser();
 
   if (userStore.getState().user) {
-    await initBoards();
+    await initTodos();
   }
-
   const app = new App();
   root.appendChild(app.render());
 });
@@ -40,7 +40,7 @@ async function initUser() {
   }
 }
 
-async function initBoards() {
+async function initTodos() {
   const uri = '/api/boards';
   try {
     const response = await fetch(uri, {
@@ -54,6 +54,24 @@ async function initBoards() {
       throw new Error(message);
     }
     boardStore.dispatch(createAction('ACTION_INIT_BOARDS', { boards: data }));
+    for (const board of data) {
+      const uri = `/api/boards/${board.id}/cards`;
+      try {
+        const response = await fetch(uri, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        const { message, data } = await response.json();
+        if (!response.ok) {
+          throw new Error(message);
+        }
+        cardStore.dispatch(createAction('ACTION_ADD_CARDS', { cards: data }));
+      } catch {
+        continue;
+      }
+    }
   } catch {
     return;
   }
