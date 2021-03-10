@@ -19,7 +19,7 @@ function reducer(state = {}, { type, payload }) {
     case ACTION_ADD_CARD:
       return {
         ...state,
-        cards: [...state.cards, payload.card],
+        cards: [payload.card, ...state.cards],
       };
     default:
       return {
