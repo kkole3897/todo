@@ -33,40 +33,48 @@ class Card {
     }
   }
 
-  async updateDescription({ cardId, description }) {
+  async updateDescription({ cardId, description, boardId }) {
     try {
       if (!this.validateDescription(description)) {
         throw new Error(
           'Description of card must be between 1 to 500 characters.',
         );
       }
-      const result = cardModel.updateDescription({ cardId, description });
+      const result = cardModel.updateDescription({
+        cardId,
+        description,
+        boardId,
+      });
       return result;
     } catch (err) {
       throw err;
     }
   }
 
-  async removeCard(cardId) {
+  async removeCard({ cardId, boardId }) {
     try {
-      const result = cardModel.removeCard(cardId);
+      const result = cardModel.removeCard({ cardId, boardId });
       return result;
     } catch (err) {
       throw err;
     }
   }
 
-  async changeBoard({ cardId, targetBoardId }) {
+  async changeBoard({ cardId, targetBoardId, originBoardId }) {
     try {
-      const result = cardModel.changeBoard({ cardId, targetBoardId });
+      const result = cardModel.changeBoard({
+        cardId,
+        targetBoardId,
+        originBoardId,
+      });
       return result;
     } catch (err) {
       throw err;
     }
   }
 
-  async validateDescription(description) {
-    return 0 < description.length && description <= 500;
+  validateDescription(description) {
+    return 0 < description.length && description.length <= 500;
   }
 }
 
