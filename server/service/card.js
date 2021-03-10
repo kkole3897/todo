@@ -3,7 +3,7 @@ const { cardModel } = require('../models');
 class Card {
   async createCard({ description, author, boardId }) {
     try {
-      if (this.validateDescription(description)) {
+      if (!this.validateDescription(description)) {
         throw new Error(
           'Description of card must be between 1 to 500 characters.',
         );
@@ -24,9 +24,9 @@ class Card {
     }
   }
 
-  async readCard(cardId) {
+  async readCard({ boardId, cardId }) {
     try {
-      const card = cardModel.getCard(cardId);
+      const card = cardModel.getCard({ boardId, cardId });
       return card;
     } catch (err) {
       throw err;
@@ -35,7 +35,7 @@ class Card {
 
   async updateDescription({ cardId, description }) {
     try {
-      if (this.validateDescription(description)) {
+      if (!this.validateDescription(description)) {
         throw new Error(
           'Description of card must be between 1 to 500 characters.',
         );
