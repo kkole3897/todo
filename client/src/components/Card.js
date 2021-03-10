@@ -6,14 +6,18 @@ import NoteIcon from '../assets/note.svg';
 import CardDropdown from './CardDropdown';
 
 class Card {
-  constructor({ content, author }) {
-    this.content = content;
+  constructor({ id, description, author, boardId }) {
+    this.id = id;
+    this.description = description;
     this.author = author;
+    this.boardId = boardId;
   }
 
   render() {
     const element = document.createElement('div');
     element.className = 'card card--my';
+    element.dataset.cardId = this.id;
+    element.dataset.boardId = this.boardId;
 
     element.innerHTML = `
       <div class='card__inner--relative'>
@@ -21,7 +25,7 @@ class Card {
           <img src=${NoteIcon} />
         </div>
         <div class='card__body'>
-          <div class='card__body--content'>${this.content}</div>
+          <div class='card__body--content'>${this.description}</div>
           <div class='card__body--author'>${this.author}</div>
         </div>
         <div class='card__more-button'>

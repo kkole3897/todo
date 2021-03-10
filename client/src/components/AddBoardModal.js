@@ -88,7 +88,7 @@ class AddBoardModal {
       }
       boardStore.dispatch(
         createAction('ACTION_ADD_BOARD', {
-          board: { id: data.id, name: this.name },
+          board: { id: data.id, name: this.name, numberOfCards: 0 },
         }),
       );
     } catch (err) {

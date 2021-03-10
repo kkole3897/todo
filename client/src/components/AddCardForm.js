@@ -65,7 +65,12 @@ class AddCardForm {
       return;
     }
     event.preventDefault();
-    const card = new Card({ content: this.state.text, author: '테스트' });
+    const card = new Card({
+      id: null,
+      description: this.state.text,
+      author: '테스트',
+      boardId: null,
+    });
     const addCardForm = event.target.closest('.add-card-form');
     addCardForm.insertAdjacentElement('afterend', card.render());
     this.setOpened(false);
