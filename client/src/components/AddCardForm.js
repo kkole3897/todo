@@ -1,15 +1,16 @@
+import { createAction } from '../lib/todox';
+import userStore from '../store/userStore';
+import cardStore from '../store/cardStore';
+
 import './AddCardForm.css';
 
-import Card from './Card';
-
 class AddCardForm {
-  constructor({ setOpened, addCard }) {
-    this.state = {
-      text: '',
-    };
+  constructor({ boardId, setOpened }) {
+    this.element = document.createElement('form');
+    this.text = '';
+    this.boardId = boardId;
 
     this.setOpened = setOpened;
-    this.addCard = addCard;
 
     this.inputTextAreaHandler = this.inputTextAreaHandler.bind(this);
     this.clickCancelButtonHandler = this.clickCancelButtonHandler.bind(this);
@@ -17,9 +18,8 @@ class AddCardForm {
   }
 
   render() {
-    const element = document.createElement('form');
-    element.className = 'add-card-form add-card-form--m';
-    element.innerHTML = `
+    this.element.className = 'add-card-form add-card-form--m';
+    this.element.innerHTML = `
       <textarea class='add-card-form__textarea'></textarea>
       <div class='add-card-form__button-container add-card-form__button-container--m'>
         <button 
@@ -32,11 +32,11 @@ class AddCardForm {
       </div>
     `;
 
-    element.addEventListener('input', this.inputTextAreaHandler);
-    element.addEventListener('click', this.clickCancelButtonHandler);
-    element.addEventListener('submit', this.submitAddCardHandler);
+    this.element.addEventListener('input', this.inputTextAreaHandler);
+    this.element.addEventListener('click', this.clickCancelButtonHandler);
+    this.element.addEventListener('submit', this.submitAddCardHandler);
 
-    return element;
+    return this.element;
   }
 
   inputTextAreaHandler(event) {
@@ -44,10 +44,10 @@ class AddCardForm {
       return;
     }
     event.preventDefault();
-    this.state.text = event.target.value;
+    this.text = event.target.value;
     const addCardForm = event.target.closest('.add-card-form');
     const addButton = addCardForm.querySelector('.add-card-form__add-button');
-    addButton.disabled = this.state.text.length <= 0;
+    addButton.disabled = this.text.length <= 0;
   }
 
   clickCancelButtonHandler(event) {
@@ -60,21 +60,45 @@ class AddCardForm {
     addCardForm.parentNode.removeChild(addCardForm);
   }
 
-  submitAddCardHandler(event) {
+  async submitAddCardHandler(event) {
     if (!event.target.closest('.add-card-form')) {
       return;
     }
     event.preventDefault();
-    const card = new Card({
-      id: null,
-      description: this.state.text,
-      author: '테스트',
-      boardId: null,
-    });
-    const addCardForm = event.target.closest('.add-card-form');
-    addCardForm.insertAdjacentElement('afterend', card.render());
-    this.setOpened(false);
-    addCardForm.parentNode.removeChild(addCardForm);
+    const uri = `/api/boards/${this.boardId}/cards`;
+    const body = {
+      description: this.text,
+    };
+    try {
+      const response = await fetch(uri, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      });
+      const { message, data } = await response.json();
+      if (!response.ok) {
+        throw new Error(message);
+      }
+      const { user } = userStore.getState();
+      cardStore.dispatch(
+        createAction('ACTION_ADD_CARD', {
+          card: {
+            id: data.id,
+            description: this.text,
+            author: user.id,
+            boardId: this.boardId,
+          },
+        }),
+      );
+      this.setOpened(false);
+      this.element.remove();
+    } catch {
+      this.setOpened(false);
+      this.element.remove();
+      alert('새로운 카드를 추가할 수 없습니다.');
+    }
   }
 }
 

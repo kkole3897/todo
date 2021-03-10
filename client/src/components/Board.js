@@ -9,10 +9,11 @@ import AddCardForm from './AddCardForm';
 import Card from './Card';
 
 class Board {
-  constructor({ id, name, numberOfCards }) {
+  constructor({ id, name }) {
+    this.element = document.createElement('div');
+
     this.id = id;
     this.name = name;
-    this.numberOfCards = numberOfCards;
     this.isAddCardFormOpened = false;
     this.cards = cardStore
       .getState()
@@ -22,17 +23,18 @@ class Board {
       this,
     );
     this.setAddCardFormOpened = this.setAddCardFormOpened.bind(this);
+
+    cardStore.subscribe(this.createNewCard, this);
   }
 
   render() {
-    const element = document.createElement('div');
-    element.className = 'board board--mr';
-    element.dataset.boardId = this.id;
-    element.innerHTML = `
+    this.element.className = 'board board--mr';
+    this.element.dataset.boardId = this.id;
+    this.element.innerHTML = `
       <div class='board__inner'>
         <div class='board__header'>
           <div class='flex'>
-            <div class='board__card-count'>${this.numberOfCards}</div>
+            <div class='board__card-count'>${this.cards.length}</div>
             <div class='board__title board__title--ml'>${this.name}</div>
           </div>
           <div class='flex'>
@@ -47,16 +49,16 @@ class Board {
         <div class='board__body'></div>
       </div>
     `;
-    const boardBody = element.querySelector('.board__body');
+    const boardBody = this.element.querySelector('.board__body');
     const fragment = document.createDocumentFragment();
     this.cards.forEach(card => {
       fragment.appendChild(new Card(card).render());
     });
     boardBody.appendChild(fragment);
 
-    element.addEventListener('click', this.clickOpenCardFormButtonHandler);
+    this.element.addEventListener('click', this.clickOpenCardFormButtonHandler);
 
-    return element;
+    return this.element;
   }
 
   clickOpenCardFormButtonHandler(event) {
@@ -68,6 +70,7 @@ class Board {
     const boardBody = board.querySelector('.board__body');
     if (!this.isAddCardFormOpened) {
       const addCardForm = new AddCardForm({
+        boardId: this.id,
         setOpened: this.setAddCardFormOpened,
       });
       boardBody.prepend(addCardForm.render());
@@ -80,6 +83,25 @@ class Board {
 
   setAddCardFormOpened(value) {
     this.isAddCardFormOpened = value;
+  }
+
+  createNewCard() {
+    const cards = cardStore
+      .getState()
+      .cards.filter(card => card.boardId === this.id);
+    if (cards.length === this.cards.length) {
+      return;
+    }
+
+    this.cards = cards;
+
+    const cardCount = this.element.querySelector('.board__card-count');
+    cardCount.innerHTML = this.cards.length;
+    const boardBody = this.element.querySelector('.board__body');
+    boardBody.insertAdjacentElement(
+      'afterbegin',
+      new Card(this.cards[0]).render(),
+    );
   }
 }
 
