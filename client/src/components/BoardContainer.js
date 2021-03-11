@@ -43,7 +43,7 @@ class BoardContainer {
 
   createNewBoard() {
     const { boards } = boardStore.getState();
-    if (boards.length === this.boards.length) {
+    if (boards.length <= this.boards.length) {
       return;
     }
     this.boards = boards;
