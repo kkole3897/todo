@@ -24,6 +24,7 @@ class BoardDropdown {
     `;
 
     this.element.addEventListener('click', this.closeDropdownHandler);
+    this.element.addEventListener('click', this.clickEditHandler);
 
     return this.element;
   }
@@ -37,7 +38,12 @@ class BoardDropdown {
   }
 
   clickEditHandler(event) {
+    if (!event.target.matches('.board__dropdown--menu-item-edit')) {
+      return;
+    }
     event.preventDefault();
+    this.openEditor();
+    this.element.remove();
   }
 
   clickDeleteHandler(event) {

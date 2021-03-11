@@ -8,6 +8,7 @@ import MoreIcon from '../assets/more.svg';
 import AddCardForm from './AddCardForm';
 import Card from './Card';
 import BoardDropdown from './BoardDropdown';
+import EditBoardModal from './EditBoardModal';
 
 class Board {
   constructor({ id, name }) {
@@ -25,6 +26,7 @@ class Board {
     );
     this.setAddCardFormOpened = this.setAddCardFormOpened.bind(this);
     this.clickMorebuttonHandler = this.clickMorebuttonHandler.bind(this);
+    this.openEditModal = this.openEditModal.bind(this);
 
     cardStore.subscribe(this.createNewCard, this);
     cardStore.subscribe(this.deleteCard, this);
@@ -92,7 +94,10 @@ class Board {
     event.preventDefault();
     const moreButton = this.element.querySelector('.board__more-button');
     moreButton.appendChild(
-      new BoardDropdown({ openEditor: null, onDelete: null }).render(),
+      new BoardDropdown({
+        openEditor: this.openEditModal,
+        onDelete: null,
+      }).render(),
     );
   }
 
@@ -131,6 +136,15 @@ class Board {
 
     const cardCount = this.element.querySelector('.board__card-count');
     cardCount.innerHTML = this.cards.length;
+  }
+
+  openEditModal() {
+    this.element.appendChild(
+      new EditBoardModal({
+        text: this.name,
+        boardId: this.boardId,
+      }).render(),
+    );
   }
 }
 
