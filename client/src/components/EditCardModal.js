@@ -22,7 +22,7 @@ class EditCardModal {
     this.element.innerHTML = `
       <div class='edit-card-modal'>
         <div class='edit-card-modal__header'>
-          <div class='edit-card-modal__title'>Add a board</div>
+          <div class='edit-card-modal__title'>Edit a card</div>
           <div class='edit-card-modal__close-button'>
             <img src=${CloseIcon} />
           </div>
@@ -30,7 +30,7 @@ class EditCardModal {
         <form class='edit-card-modal__body'>
           <label class='edit-card-modal__label' for='description'>Description</label>
           <textarea
-            id='name'
+            id='description'
             class='edit-card-modal__text-input edit-card-modal__text-input--m'
             type='text'
             name='description'
