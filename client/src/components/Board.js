@@ -1,10 +1,10 @@
-import cardStore from '../store/cardStore';
-
 import './Board.css';
 
 import PlusIcon from '../assets/plus.svg';
 import MoreIcon from '../assets/more.svg';
 
+import { createAction } from '../lib/todox';
+import cardStore from '../store/cardStore';
 import AddCardForm from './AddCardForm';
 import Card from './Card';
 import BoardDropdown from './BoardDropdown';
@@ -28,6 +28,7 @@ class Board {
     this.setAddCardFormOpened = this.setAddCardFormOpened.bind(this);
     this.clickMorebuttonHandler = this.clickMorebuttonHandler.bind(this);
     this.openEditModal = this.openEditModal.bind(this);
+    this.deleteBoard = this.deleteBoard.bind(this);
 
     cardStore.subscribe(this.createNewCard, this);
     cardStore.subscribe(this.deleteCard, this);
@@ -98,7 +99,7 @@ class Board {
     moreButton.appendChild(
       new BoardDropdown({
         openEditor: this.openEditModal,
-        onDelete: null,
+        onDelete: this.deleteBoard,
       }).render(),
     );
   }
@@ -159,6 +160,27 @@ class Board {
     this.name = board.name;
     const nameElement = this.element.querySelector('.board__title');
     nameElement.innerHTML = this.name;
+  }
+
+  async deleteBoard() {
+    const uri = `/api/boards/${this.id}`;
+    try {
+      const response = await fetch(uri, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const { message } = await response.json();
+      if (!response.ok) {
+        throw new Error(message);
+      }
+      boardStore.unsubscribe(this.updateName, this);
+      boardStore.dispatch(createAction('ACTION_DELETE_BOARD', { id: this.id }));
+      this.element.remove();
+    } catch {
+      alert('보드를 삭제하지 못했습니다.');
+    }
   }
 }
 

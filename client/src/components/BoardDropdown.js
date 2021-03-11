@@ -25,6 +25,7 @@ class BoardDropdown {
 
     this.element.addEventListener('click', this.closeDropdownHandler);
     this.element.addEventListener('click', this.clickEditHandler);
+    this.element.addEventListener('click', this.clickDeleteHandler);
 
     return this.element;
   }
@@ -47,7 +48,12 @@ class BoardDropdown {
   }
 
   clickDeleteHandler(event) {
+    if (!event.target.matches('.board__dropdown--menu-item-delete')) {
+      return;
+    }
     event.preventDefault();
+    this.onDelete();
+    this.element.remove();
   }
 }
 
