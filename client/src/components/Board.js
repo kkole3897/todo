@@ -25,6 +25,7 @@ class Board {
     this.setAddCardFormOpened = this.setAddCardFormOpened.bind(this);
 
     cardStore.subscribe(this.createNewCard, this);
+    cardStore.subscribe(this.deleteCard, this);
   }
 
   render() {
@@ -89,7 +90,7 @@ class Board {
     const cards = cardStore
       .getState()
       .cards.filter(card => card.boardId === this.id);
-    if (cards.length === this.cards.length) {
+    if (cards.length <= this.cards.length) {
       return;
     }
 
@@ -102,6 +103,20 @@ class Board {
       'afterbegin',
       new Card(this.cards[0]).render(),
     );
+  }
+
+  deleteCard() {
+    const cards = cardStore
+      .getState()
+      .cards.filter(card => card.boardId === this.id);
+    if (cards.length >= this.cards.length) {
+      return;
+    }
+
+    this.cards = cards;
+
+    const cardCount = this.element.querySelector('.board__card-count');
+    cardCount.innerHTML = this.cards.length;
   }
 }
 
