@@ -3,6 +3,7 @@ import { createStore } from '../lib/todox';
 const ACTION_INIT_BOARDS = 'ACTION_INIT_BOARDS';
 const ACTION_ADD_BOARD = 'ACTION_ADD_BOARD';
 const ACTION_UPDATE_NAME = 'ACTION_UPDATE_NAME';
+const ACTION_DELETE_BOARD = 'ACTION_DELETE_BOARD';
 
 function reducer(state = {}, { type, payload }) {
   switch (type) {
@@ -24,6 +25,11 @@ function reducer(state = {}, { type, payload }) {
           name: payload.name,
         }),
       };
+    case ACTION_DELETE_BOARD:
+      return {
+        ...state,
+        boards: deleteBoard(state.boards, payload.id),
+      };
     default:
       return {
         ...state,
@@ -38,6 +44,10 @@ function updateName(boards, { id, name }) {
     }
     return board;
   });
+}
+
+function deleteBoard(boards, id) {
+  return boards.filter(board => board.id !== id);
 }
 
 const boardStore = createStore({ initialState: { boards: [] }, reducer });
