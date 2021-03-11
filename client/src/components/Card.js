@@ -3,23 +3,31 @@ import './Card.css';
 import MoreIcon from '../assets/more.svg';
 import NoteIcon from '../assets/note.svg';
 
+import cardStore from '../store/cardStore';
 import CardDropdown from './CardDropdown';
+import EditCardModal from './EditCardModal';
 
 class Card {
   constructor({ id, description, author, boardId }) {
+    this.element = document.createElement('div');
+
     this.id = id;
     this.description = description;
     this.author = author;
     this.boardId = boardId;
+
+    this.clickMoreButtonHandler = this.clickMoreButtonHandler.bind(this);
+    this.openEditModal = this.openEditModal.bind(this);
+
+    cardStore.subscribe(this.updateDescription, this);
   }
 
   render() {
-    const element = document.createElement('div');
-    element.className = 'card card--my';
-    element.dataset.cardId = this.id;
-    element.dataset.boardId = this.boardId;
+    this.element.className = 'card card--my';
+    this.element.dataset.cardId = this.id;
+    this.element.dataset.boardId = this.boardId;
 
-    element.innerHTML = `
+    this.element.innerHTML = `
       <div class='card__inner--relative'>
         <div class='card__icon'>
           <img src=${NoteIcon} />
@@ -34,9 +42,9 @@ class Card {
       </div>
     `;
 
-    element.addEventListener('click', this.clickMoreButtonHandler);
+    this.element.addEventListener('click', this.clickMoreButtonHandler);
 
-    return element;
+    return this.element;
   }
 
   clickMoreButtonHandler(event) {
@@ -44,23 +52,31 @@ class Card {
       return;
     }
     event.preventDefault();
-    const cardDropdown = new CardDropdown();
+    const cardDropdown = new CardDropdown({ openEditor: this.openEditModal });
     const moreButton = event.target.closest('.card__more-button');
     moreButton.appendChild(cardDropdown.render());
   }
 
-  // const clickMoreButtonHandler = () => {
-  //   if (!isDropdownOpened) {
-  //     $moreButton.appendChild($dropdown);
-  //   } else {
-  //     $dropdown.remove();
-  //   }
-  //   isDropdownOpened = !isDropdownOpened;
-  // };
+  openEditModal() {
+    const editCardModal = new EditCardModal({
+      text: this.description,
+      boardId: this.boardId,
+      cardId: this.id,
+    });
+    this.element.appendChild(editCardModal.render());
+  }
 
-  // $moreButton.addEventListener('click', clickMoreButtonHandler);
-
-  // const $dropdown = CardDropdown({ onRemove });
+  updateDescription() {
+    const card = cardStore
+      .getState()
+      .cards.filter(card => card.id === this.id)[0];
+    if (this.description === card.description) {
+      return;
+    }
+    this.description = card.description;
+    const contentElement = this.element.querySelector('.card__body--content');
+    contentElement.innerHTML = this.description;
+  }
 }
 
 export default Card;
