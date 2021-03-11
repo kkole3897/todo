@@ -1,0 +1,32 @@
+.board__dropdown--menu {
+  position: absolute;
+  right: 12px;
+  top: 20px;
+  width: 6rem;
+  margin: 16px 0 0 0;
+  border: 1px var(--main-border-color) solid;
+  border-radius: 4px;
+  background-color: white;
+  z-index: 100;
+}
+
+.board__dropdown--overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
+  cursor: default;
+  z-index: 99;
+}
+
+.board__dropdown--menu-item {
+  margin: 4px 0;
+  padding: 4px 8px;
+}
+
+.board__dropdown--menu-item:hover {
+  background-color: var(--main-hover-bg-color);
+  color: white;
+}

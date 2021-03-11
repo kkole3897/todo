@@ -13,6 +13,7 @@
 }
 
 .board__inner {
+  position: relative;
   padding: 16px;
 }
 

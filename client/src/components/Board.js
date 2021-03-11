@@ -7,6 +7,7 @@ import MoreIcon from '../assets/more.svg';
 
 import AddCardForm from './AddCardForm';
 import Card from './Card';
+import BoardDropdown from './BoardDropdown';
 
 class Board {
   constructor({ id, name }) {
@@ -23,6 +24,7 @@ class Board {
       this,
     );
     this.setAddCardFormOpened = this.setAddCardFormOpened.bind(this);
+    this.clickMorebuttonHandler = this.clickMorebuttonHandler.bind(this);
 
     cardStore.subscribe(this.createNewCard, this);
     cardStore.subscribe(this.deleteCard, this);
@@ -58,6 +60,7 @@ class Board {
     boardBody.appendChild(fragment);
 
     this.element.addEventListener('click', this.clickOpenCardFormButtonHandler);
+    this.element.addEventListener('click', this.clickMorebuttonHandler);
 
     return this.element;
   }
@@ -80,6 +83,17 @@ class Board {
       boardBody.removeChild(boardBody.firstChild);
       this.setAddCardFormOpened(false);
     }
+  }
+
+  clickMorebuttonHandler(event) {
+    if (!event.target.closest('.board__more-button')) {
+      return;
+    }
+    event.preventDefault();
+    const moreButton = this.element.querySelector('.board__more-button');
+    moreButton.appendChild(
+      new BoardDropdown({ openEditor: null, onDelete: null }).render(),
+    );
   }
 
   setAddCardFormOpened(value) {
