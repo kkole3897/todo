@@ -54,6 +54,8 @@ class CardDropdown {
     this.onDelete();
     this.element.remove();
   }
+
+  // TODO: 객체 자신을 메모리에 반환할 수 있는 안전한 destroy 필요
 }
 
 export default CardDropdown;

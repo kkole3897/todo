@@ -98,6 +98,7 @@ class Card {
       }
       cardStore.dispatch(createAction('ACTION_DELETE_CARD', { id: this.id }));
       this.element.remove();
+      // TODO: unsubscribe store & 해당 인스턴스 destroy
     } catch {
       alert('카드 삭제 실패');
     }

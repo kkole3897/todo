@@ -103,6 +103,8 @@ class AddBoardModal {
     );
     addBoardModalOverlay.parentNode.removeChild(addBoardModalOverlay);
   }
+
+  // TODO: dom에서 제거될 때 객체 본인도 메모리에 반환하는 안전한 destroy 기능 필요
 }
 
 export default AddBoardModal;

@@ -100,6 +100,8 @@ class AddCardForm {
       alert('새로운 카드를 추가할 수 없습니다.');
     }
   }
+
+  // TODO: element를 제거할 때 객체 본인도 메모리에 반환하는 안전한 destroy 필요
 }
 
 export default AddCardForm;
