@@ -34,7 +34,7 @@ router.post('/', async (req, res) => {
     });
     return;
   } catch {
-    res.status(422).json({
+    res.status(400).json({
       success: false,
       message: 'Duplicated board name.',
       data: {},
@@ -45,22 +45,38 @@ router.post('/', async (req, res) => {
 router.put('/:boardId', async (req, res) => {
   const { boardId } = req.params;
   const { name } = req.body;
-  const result = await boardService.updateBoard({ id: boardId, name });
-  res.status(201).json({
-    success: true,
-    message: 'Successfully update board.',
-    data: result,
-  });
+  try {
+    const result = await boardService.updateBoard({ id: boardId, name });
+    res.status(201).json({
+      success: true,
+      message: 'Successfully update board.',
+      data: result,
+    });
+  } catch {
+    res.status(400).json({
+      success: false,
+      message: 'Duplicated board name.',
+      data: {},
+    });
+  }
 });
 
 router.delete('/:boardId', async (req, res) => {
   const { boardId } = req.params;
-  const result = await boardService.deleteBoard(boardId);
-  res.status(200).json({
-    success: true,
-    message: 'Successfully delete board.',
-    data: result,
-  });
+  try {
+    const result = await boardService.deleteBoard(boardId);
+    res.status(200).json({
+      success: true,
+      message: 'Successfully delete board.',
+      data: result,
+    });
+  } catch {
+    res.status(400).json({
+      success: false,
+      message: 'Cannot delete board properly',
+      data: {},
+    });
+  }
 });
 
 module.exports = router;
