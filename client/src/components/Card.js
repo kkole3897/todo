@@ -75,7 +75,7 @@ class Card {
     const card = cardStore
       .getState()
       .cards.filter(card => card.id === this.id)[0];
-    if (!card || this.description === card.description) {
+    if (this.description === card.description) {
       return;
     }
     this.description = card.description;
@@ -96,9 +96,9 @@ class Card {
       if (!response.ok) {
         throw new Error(message);
       }
+      cardStore.unsubscribe(this.updateDescription, this);
       cardStore.dispatch(createAction('ACTION_DELETE_CARD', { id: this.id }));
       this.element.remove();
-      // TODO: unsubscribe store & 해당 인스턴스 destroy
     } catch {
       alert('카드 삭제 실패');
     }

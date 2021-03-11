@@ -8,7 +8,13 @@ export function createStore({ initialState = {}, reducer }) {
     listeners.push({ subscriber, context });
   };
 
-  // TODO: unsubscribe 기능 필요
+  const unsubscribe = (subscriber, context = null) => {
+    const newListeners = listeners.filter(
+      listener =>
+        !(listener.subscriber === subscriber && listener.context === context),
+    );
+    listeners.splice(0, listeners.length, ...newListeners);
+  };
 
   const publish = () => {
     listeners.forEach(({ subscriber, context }) => {
@@ -25,6 +31,7 @@ export function createStore({ initialState = {}, reducer }) {
     getState,
     dispatch,
     subscribe,
+    unsubscribe,
   };
 }
 
