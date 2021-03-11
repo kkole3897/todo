@@ -3,6 +3,7 @@ import './Card.css';
 import MoreIcon from '../assets/more.svg';
 import NoteIcon from '../assets/note.svg';
 
+import { createAction } from '../lib/todox';
 import cardStore from '../store/cardStore';
 import CardDropdown from './CardDropdown';
 import EditCardModal from './EditCardModal';
@@ -18,6 +19,7 @@ class Card {
 
     this.clickMoreButtonHandler = this.clickMoreButtonHandler.bind(this);
     this.openEditModal = this.openEditModal.bind(this);
+    this.deleteCard = this.deleteCard.bind(this);
 
     cardStore.subscribe(this.updateDescription, this);
   }
@@ -52,7 +54,10 @@ class Card {
       return;
     }
     event.preventDefault();
-    const cardDropdown = new CardDropdown({ openEditor: this.openEditModal });
+    const cardDropdown = new CardDropdown({
+      openEditor: this.openEditModal,
+      onDelete: this.deleteCard,
+    });
     const moreButton = event.target.closest('.card__more-button');
     moreButton.appendChild(cardDropdown.render());
   }
@@ -70,12 +75,32 @@ class Card {
     const card = cardStore
       .getState()
       .cards.filter(card => card.id === this.id)[0];
-    if (this.description === card.description) {
+    if (!card || this.description === card.description) {
       return;
     }
     this.description = card.description;
     const contentElement = this.element.querySelector('.card__body--content');
     contentElement.innerHTML = this.description;
+  }
+
+  async deleteCard() {
+    const uri = `/api/boards/${this.boardId}/cards/${this.id}`;
+    try {
+      const response = await fetch(uri, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const { message } = await response.json();
+      if (!response.ok) {
+        throw new Error(message);
+      }
+      cardStore.dispatch(createAction('ACTION_DELETE_CARD', { id: this.id }));
+      this.element.remove();
+    } catch {
+      alert('카드 삭제 실패');
+    }
   }
 }
 
