@@ -9,6 +9,7 @@ import AddCardForm from './AddCardForm';
 import Card from './Card';
 import BoardDropdown from './BoardDropdown';
 import EditBoardModal from './EditBoardModal';
+import boardStore from '../store/boardStore';
 
 class Board {
   constructor({ id, name }) {
@@ -30,6 +31,7 @@ class Board {
 
     cardStore.subscribe(this.createNewCard, this);
     cardStore.subscribe(this.deleteCard, this);
+    boardStore.subscribe(this.updateName, this);
   }
 
   render() {
@@ -142,9 +144,21 @@ class Board {
     this.element.appendChild(
       new EditBoardModal({
         text: this.name,
-        boardId: this.boardId,
+        boardId: this.id,
       }).render(),
     );
+  }
+
+  updateName() {
+    const board = boardStore
+      .getState()
+      .boards.filter(board => board.id === this.id)[0];
+    if (this.name === board.name) {
+      return;
+    }
+    this.name = board.name;
+    const nameElement = this.element.querySelector('.board__title');
+    nameElement.innerHTML = this.name;
   }
 }
 

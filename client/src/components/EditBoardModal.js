@@ -2,6 +2,9 @@ import './EditBoardModal.css';
 
 import CloseIcon from '../assets/close.svg';
 
+import { createAction } from '../lib/todox';
+import boardStore from '../store/boardStore';
+
 class EditBoardModal {
   constructor({ text, boardId }) {
     this.element = document.createElement('div');
@@ -40,6 +43,8 @@ class EditBoardModal {
     `;
 
     this.element.addEventListener('click', this.closeModalHandler);
+    this.element.addEventListener('input', this.changeInputHandler);
+    this.element.addEventListener('submit', this.submitHandler);
 
     return this.element;
   }
@@ -58,11 +63,42 @@ class EditBoardModal {
   }
 
   changeInputHandler(event) {
+    if (!event.target.matches('.edit-board-modal__text-input')) {
+      return;
+    }
     event.preventDefault();
+    this.text = event.target.value;
   }
 
   async submitHandler(event) {
+    if (!event.target.closest('.edit-board-modal__body')) {
+      return;
+    }
     event.preventDefault();
+    const uri = `/api/boards/${this.boardId}`;
+    const body = { name: this.text };
+    try {
+      const response = await fetch(uri, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      });
+      const { message } = await response.json();
+      if (!response.ok) {
+        throw new Error(message);
+      }
+      boardStore.dispatch(
+        createAction('ACTION_UPDATE_NAME', {
+          id: this.boardId,
+          name: this.text,
+        }),
+      );
+      this.element.remove();
+    } catch {
+      alert('보드 이름을 수정할 수 없습니다.');
+    }
   }
 }
 
