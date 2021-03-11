@@ -1,13 +1,15 @@
 import './CardDropdown.css';
 
 class CardDropdown {
-  constructor({ openEditor }) {
+  constructor({ openEditor, onDelete }) {
     this.element = document.createElement('div');
 
     this.openEditor = openEditor;
+    this.onDelete = onDelete;
 
     this.closeDropdownHandler = this.closeDropdownHandler.bind(this);
     this.clickEditHandler = this.clickEditHandler.bind(this);
+    this.clickDeleteHandler = this.clickDeleteHandler.bind(this);
   }
 
   render() {
@@ -17,12 +19,13 @@ class CardDropdown {
       <div class='card__dropdown--overlay'></div>
       <div class='card__dropdown--menu'>
         <div class='card__dropdown--menu-item card__dropdown--menu-item-edit'>Edit</div>
-        <div class='card__dropdown--menu-item'>Delete</div>
+        <div class='card__dropdown--menu-item card__dropdown--menu-item-delete'>Delete</div>
       </div>
     `;
 
     this.element.addEventListener('click', this.closeDropdownHandler);
     this.element.addEventListener('click', this.clickEditHandler);
+    this.element.addEventListener('click', this.clickDeleteHandler);
 
     return this.element;
   }
@@ -41,6 +44,14 @@ class CardDropdown {
       return;
     }
     this.openEditor();
+    this.element.remove();
+  }
+
+  clickDeleteHandler(event) {
+    if (!event.target.matches('.card__dropdown--menu-item-delete')) {
+      return;
+    }
+    this.onDelete();
     this.element.remove();
   }
 }
