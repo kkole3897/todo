@@ -79,4 +79,24 @@ router.delete('/:boardId', async (req, res) => {
   }
 });
 
+router.patch('/', async (req, res) => {
+  const { user } = req;
+  const { id, previousBoardId } = req.body;
+  try {
+    await boardService.moveBoard({ userId: user.id, id, previousBoardId });
+    res.status(200).json({
+      success: true,
+      message: 'Successfully move board.',
+      data: {},
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({
+      success: false,
+      message: 'Cannot move board.',
+      data: {},
+    });
+  }
+});
+
 module.exports = router;

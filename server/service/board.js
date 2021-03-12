@@ -49,8 +49,15 @@ class Board {
     try {
       const result = await boardModel.deleteBoard(id);
       await cardModel.removeCardsInBoard(id);
-
       return { ...result };
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async moveBoard({ id, previousBoardId, userId }) {
+    try {
+      await boardModel.moveBoard({ id, previousBoardId, userId });
     } catch (err) {
       throw err;
     }
