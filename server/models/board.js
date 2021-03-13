@@ -81,28 +81,26 @@ class Board {
   }
 
   async moveBoard({ id, previousBoardId, userId }) {
-    const getPrevPosQuery = `SELECT position FROM board WHERE id = ? AND user_id = ? AND deleted_at IS NULL;`;
-    const getOriginPosQuery = `SELECT position FROM board WHERE id = ? AND user_id = ? AND deleted_at IS NULL;`;
+    const getPositionQuery = `SELECT position FROM board WHERE id = ? AND user_id = ? AND deleted_at IS NULL;`;
     const updateTargetPosQuery = `UPDATE board SET position = ? WHERE id = ? AND user_id = ? AND deleted_at IS NULL;`;
     const connection = await this.database.getConnection(async conn => conn);
     try {
       const [[{ position: prevPos }]] = !!!previousBoardId
         ? [[{ position: 0 }]]
-        : await this.database.query(getPrevPosQuery, [previousBoardId, userId]);
+        : await this.database.query(getPositionQuery, [
+            previousBoardId,
+            userId,
+          ]);
       const [
         [{ position: targetPos }],
-      ] = await this.database.query(getOriginPosQuery, [id, userId]);
+      ] = await this.database.query(getPositionQuery, [id, userId]);
       const newTargetPos = targetPos > prevPos ? prevPos + 1 : prevPos;
       const updateRestQuery =
         targetPos > prevPos
           ? `UPDATE board SET position = position + 1 WHERE id != ? AND user_id = ? AND position >= ? AND position < ?`
           : `UPDATE board SET position = position - 1 WHERE id != ? AND user_id = ? AND position <= ? AND position > ?`;
       await connection.beginTransaction();
-      await connection.query(updateTargetPosQuery, [
-        prevPos < targetPos ? prevPos + 1 : prevPos,
-        id,
-        userId,
-      ]);
+      await connection.query(updateTargetPosQuery, [newTargetPos, id, userId]);
       await connection.query(updateRestQuery, [
         id,
         userId,
