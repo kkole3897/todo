@@ -25,15 +25,31 @@ class Card {
   async addCard({ description, author, boardId }) {
     const addCardQuery = `
       INSERT INTO card(description, author, board_id, position)
-      VALUES (?, ?, ?, (SELECT IFNULL(MAX(position) + 1, 1) FROM card b WHERE board_id = ?));
+      VALUES (?, ?, ?, 1);
     `;
-    const [result] = await this.database.query(addCardQuery, [
-      description,
-      author,
-      boardId,
-      boardId,
-    ]);
-    return { id: result.insertId };
+    const increasePositionQuery = `
+      UPDATE card
+      SET position = position + 1
+      WHERE board_id = ? AND deleted_at IS NULL;
+    `;
+    const connection = await this.database.getConnection(async conn => conn);
+    try {
+      await connection.beginTransaction();
+      await connection.query(increasePositionQuery, [boardId]);
+      const [result] = await connection.query(addCardQuery, [
+        description,
+        author,
+        boardId,
+        boardId,
+      ]);
+      await connection.commit();
+      return { id: result.insertId };
+    } catch (err) {
+      await connection.rollback();
+      throw err;
+    } finally {
+      connection.release();
+    }
   }
 
   async updateDescription({ description, cardId, boardId }) {
@@ -121,7 +137,41 @@ class Card {
     }
   }
 
-  async moveCard({ id, previousCardId, boardId }) {}
+  async moveCard({ id, previousCardId, boardId }) {
+    const getPositionQuery = `SELECT position FROM card WHERE id = ? AND board_id = ? AND deleted_at IS NULL;`;
+    const updateTargetPosQuery = `UPDATE card SET position = ? WHERE id = ? AND board_id = ? AND deleted_at IS NULL;`;
+    const connection = await this.database.getConnection(async conn => conn);
+    try {
+      const [
+        [{ position: targetPos }],
+      ] = await this.database.query(getPositionQuery, [id, boardId]);
+      const [[{ position: prevPos }]] = !!!previousCardId
+        ? [[{ position: 0 }]]
+        : await this.database.query(getPositionQuery, [
+            previousCardId,
+            boardId,
+          ]);
+      const newTargetPos = targetPos > prevPos ? prevPos + 1 : prevPos;
+      const updateRestQuery =
+        targetPos > prevPos
+          ? `UPDATE card SET position = position + 1 WHERE id != ? AND board_id = ? AND position >= ? AND position < ?;`
+          : `UPDATE card SET position = position - 1 WHERE id != ? AND board_id = ? AND position <= ? AND position > ?;`;
+      await connection.beginTransaction();
+      await connection.query(updateTargetPosQuery, [newTargetPos, id, boardId]);
+      await connection.query(updateRestQuery, [
+        id,
+        boardId,
+        newTargetPos,
+        targetPos,
+      ]);
+      await connection.commit();
+    } catch (err) {
+      await connection.rollback();
+      throw err;
+    } finally {
+      connection.release();
+    }
+  }
 }
 
 module.exports = Card;
