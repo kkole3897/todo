@@ -1,6 +1,6 @@
-import boardStore from '../store/boardStore';
-
 import './BoardContainer.css';
+
+import boardStore from '../store/boardStore';
 import AddBoardModal from './AddBoardModal';
 import Board from './Board';
 
@@ -13,6 +13,8 @@ class BoardContainer {
     this.clickAddBoardButtonHandler = this.clickAddBoardButtonHandler.bind(
       this,
     );
+    this.dropHandler = this.dropHandler.bind(this);
+
     boardStore.subscribe(this.createNewBoard, this);
   }
 
@@ -27,6 +29,8 @@ class BoardContainer {
     this.element.insertAdjacentHTML('beforeend', button);
 
     this.element.addEventListener('click', this.clickAddBoardButtonHandler);
+    this.element.addEventListener('dragover', this.dragOverHandler);
+    this.element.addEventListener('drop', this.dropHandler);
 
     return this.element;
   }
@@ -50,6 +54,26 @@ class BoardContainer {
     const target = this.element.querySelector('.board-container__add-button');
     const board = this.boards[this.boards.length - 1];
     target.insertAdjacentElement('beforebegin', new Board(board).render());
+  }
+
+  dragOverHandler(event) {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+    if (!event.target.closest('.board')) {
+      return;
+    }
+    const target = event.target.closest('.board');
+    const { nextSibling } = target;
+    const { draggedBoard } = boardStore.getState();
+    if (nextSibling === draggedBoard) {
+      target.insertAdjacentElement('beforebegin', draggedBoard);
+    } else {
+      target.insertAdjacentElement('afterend', draggedBoard);
+    }
+  }
+
+  dropHandler(event) {
+    event.preventDefault();
   }
 }
 

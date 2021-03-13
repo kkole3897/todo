@@ -5,11 +5,11 @@ import MoreIcon from '../assets/more.svg';
 
 import { createAction } from '../lib/todox';
 import cardStore from '../store/cardStore';
+import boardStore from '../store/boardStore';
 import AddCardForm from './AddCardForm';
 import Card from './Card';
 import BoardDropdown from './BoardDropdown';
 import EditBoardModal from './EditBoardModal';
-import boardStore from '../store/boardStore';
 
 class Board {
   constructor({ id, name }) {
@@ -29,6 +29,8 @@ class Board {
     this.clickMorebuttonHandler = this.clickMorebuttonHandler.bind(this);
     this.openEditModal = this.openEditModal.bind(this);
     this.deleteBoard = this.deleteBoard.bind(this);
+    this.dragStartHandler = this.dragStartHandler.bind(this);
+    this.dragEndHandler = this.dragEndHandler.bind(this);
 
     cardStore.subscribe(this.createNewCard, this);
     cardStore.subscribe(this.deleteCard, this);
@@ -38,6 +40,7 @@ class Board {
   render() {
     this.element.className = 'board board--mr';
     this.element.dataset.boardId = this.id;
+    this.element.setAttribute('draggable', true);
     this.element.innerHTML = `
       <div class='board__inner'>
         <div class='board__header'>
@@ -66,6 +69,8 @@ class Board {
 
     this.element.addEventListener('click', this.clickOpenCardFormButtonHandler);
     this.element.addEventListener('click', this.clickMorebuttonHandler);
+    this.element.addEventListener('dragstart', this.dragStartHandler);
+    this.element.addEventListener('dragend', this.dragEndHandler);
 
     return this.element;
   }
@@ -180,6 +185,41 @@ class Board {
       this.element.remove();
     } catch {
       alert('보드를 삭제하지 못했습니다.');
+    }
+  }
+
+  dragStartHandler() {
+    this.element.style.opacity = 0.5;
+    boardStore.dispatch(
+      createAction('ACTION_GRAB_DRAGGED_BOARD', { draggedBoard: this.element }),
+    );
+  }
+
+  async dragEndHandler() {
+    this.element.style.opacity = '';
+    boardStore.dispatch(createAction('ACTION_DROP_DRAGGED_BOARD'));
+    const { previousSibling } = this.element;
+    const previousBoardId = !!previousSibling
+      ? previousSibling.dataset.boardId
+      : null;
+    const uri = `/api/boards`;
+    const body = {
+      previousBoardId,
+      id: this.id,
+    };
+    try {
+      const response = await fetch(uri, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      });
+      if (!response.ok) {
+        throw new Error(message);
+      }
+    } catch {
+      alert('보드 위치를 업데이트하지 못했습니다.');
     }
   }
 }
