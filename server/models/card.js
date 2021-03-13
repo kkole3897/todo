@@ -10,6 +10,7 @@ class Card {
         updated_at DATETIME ON UPDATE CURRENT_TIMESTAMP,
         deleted_at DATETIME,
         author VARCHAR(20) NOT NULL,
+        position INT NOT NULL,
         board_id INT NOT NULL,
         PRIMARY KEY (id),
         FOREIGN KEY (board_id) REFERENCES board(id),
@@ -23,12 +24,13 @@ class Card {
 
   async addCard({ description, author, boardId }) {
     const addCardQuery = `
-      INSERT INTO card(description, author, board_id)
-      VALUES (?, ?, ?);
+      INSERT INTO card(description, author, board_id, position)
+      VALUES (?, ?, ?, (SELECT IFNULL(MAX(position) + 1, 1) FROM card b WHERE board_id = ?));
     `;
     const [result] = await this.database.query(addCardQuery, [
       description,
       author,
+      boardId,
       boardId,
     ]);
     return { id: result.insertId };
@@ -118,6 +120,8 @@ class Card {
       throw err;
     }
   }
+
+  async moveCard({ id, previousCardId, boardId }) {}
 }
 
 module.exports = Card;
