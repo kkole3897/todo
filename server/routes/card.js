@@ -93,23 +93,43 @@ router.patch('/:cardId/description', async (req, res) => {
 });
 
 router.patch('/:cardId/board', async (req, res) => {
-  const { targetBoardId } = req.body;
+  const { targetBoardId, previousCardId } = req.body;
   const { cardId, boardId } = req.params;
   try {
-    const id = await cardService.changeBoard({
+    await cardService.changeBoard({
       cardId,
       targetBoardId,
       originBoardId: boardId,
+      previousCardId,
     });
     res.status(200).json({
       success: true,
-      message: 'Successfully move card.',
-      data: { ...id },
+      message: 'Successfully change board.',
+      data: {},
     });
   } catch {
     res.status(400).json({
       success: false,
       message: 'Incorrect card id or target board.',
+      data: {},
+    });
+  }
+});
+
+router.patch('/:cardId/position', async (req, res) => {
+  const { previousCardId } = req.body;
+  const { cardId, boardId } = req.params;
+  try {
+    await cardService.moveCard({ id: cardId, previousCardId, boardId });
+    res.status(200).json({
+      success: true,
+      message: 'Successfully move card.',
+      data: {},
+    });
+  } catch {
+    res.status(400).json({
+      success: false,
+      message: 'Fail to move card.',
       data: {},
     });
   }

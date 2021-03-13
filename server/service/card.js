@@ -60,14 +60,22 @@ class Card {
     }
   }
 
-  async changeBoard({ cardId, targetBoardId, originBoardId }) {
+  async changeBoard({ cardId, targetBoardId, originBoardId, previousCardId }) {
     try {
-      const result = cardModel.changeBoard({
+      await cardModel.changeBoard({
         cardId,
         targetBoardId,
         originBoardId,
+        previousCardId,
       });
-      return result;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async moveCard({ id, previousCardId, boardId }) {
+    try {
+      await cardModel.moveCard({ id, previousCardId, boardId });
     } catch (err) {
       throw err;
     }
