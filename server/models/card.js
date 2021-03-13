@@ -85,21 +85,48 @@ class Card {
     return { id: cardId };
   }
 
-  async changeBoard({ cardId, targetBoardId, originBoardId }) {
-    const changeBoardQuery = `
-      UPDATE card
-      SET board_id = ?
-      WHERE id = ? AND board_id = ? AND deleted_at IS NULL;
-    `;
-    const [result] = await this.database.query(changeBoardQuery, [
-      targetBoardId,
-      cardId,
-      originBoardId,
-    ]);
-    if (result.affectedRows !== 1) {
-      throw new Error(`Cannot find id '${cardId}' in table 'card'`);
+  async changeBoard({ cardId, targetBoardId, originBoardId, previousCardId }) {
+    const getPositionQuery = `SELECT position FROM card WHERE id = ? AND board_id = ? AND deleted_at IS NULL;`;
+    const updateTargetPosQuery =
+      'UPDATE card SET position = ?, board_id = ? WHERE id = ? AND deleted_at IS NULL;';
+    const updateCardsInOriginBoard = `UPDATE card SET position = position - 1 WHERE id != ? AND board_id = ? AND position > ? AND deleted_at IS NULL;`;
+    const updateCardsInTargetBoard = `UPDATE card SET position = position + 1 WHERE id != ? AND board_id = ? AND position >= ? AND deleted_at IS NULL;`;
+
+    const connection = await this.database.getConnection(async conn => conn);
+    try {
+      const [
+        [{ position: targetPos }],
+      ] = await this.database.query(getPositionQuery, [cardId, originBoardId]);
+      const [[{ position: prevPos }]] = !!!previousCardId
+        ? [[{ position: 0 }]]
+        : await this.database.query(getPositionQuery, [
+            previousCardId,
+            targetBoardId,
+          ]);
+      const newTargetPos = prevPos + 1;
+      await connection.beginTransaction();
+      await connection.query(updateTargetPosQuery, [
+        newTargetPos,
+        targetBoardId,
+        cardId,
+      ]);
+      await connection.query(updateCardsInOriginBoard, [
+        cardId,
+        originBoardId,
+        targetPos,
+      ]);
+      await connection.query(updateCardsInTargetBoard, [
+        cardId,
+        targetBoardId,
+        newTargetPos,
+      ]);
+      await connection.commit();
+    } catch (err) {
+      await connection.rollback();
+      throw err;
+    } finally {
+      connection.release();
     }
-    return { id: cardId };
   }
 
   async getCard({ boardId, cardId }) {
