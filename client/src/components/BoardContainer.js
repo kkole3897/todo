@@ -78,13 +78,34 @@ class BoardContainer {
     }
   }
 
-  dropHandler(event) {
-    event.stopPropagation();
+  async dropHandler(event) {
     if (![...event.dataTransfer.types].includes('board-id')) {
       return;
     }
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
+
+    const { draggedBoard } = boardStore.getState();
+    const previousBoardId = !!draggedBoard.previousSibling
+      ? draggedBoard.previousSibling.dataset.boardId
+      : null;
+    const uri = '/api/boards';
+    const body = { previousBoardId, id: draggedBoard.dataset.boardId };
+    try {
+      const response = await fetch(uri, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      });
+      const { message } = await response.json();
+      if (!response.ok) {
+        throw new Error(message);
+      }
+    } catch {
+      alert('보드를 이동하지 못 했습니다.');
+    }
   }
 }
 
