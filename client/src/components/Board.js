@@ -32,6 +32,7 @@ class Board {
     this.dragStartHandler = this.dragStartHandler.bind(this);
     this.dragEndHandler = this.dragEndHandler.bind(this);
     this.dragOverHandler = this.dragOverHandler.bind(this);
+    this.dropHandler = this.dropHandler.bind(this);
 
     cardStore.subscribe(this.createNewCard, this);
     cardStore.subscribe(this.deleteCard, this);
@@ -74,6 +75,7 @@ class Board {
     this.element.addEventListener('dragstart', this.dragStartHandler);
     this.element.addEventListener('dragend', this.dragEndHandler);
     this.element.addEventListener('dragover', this.dragOverHandler);
+    this.element.addEventListener('drop', this.dropHandler);
 
     return this.element;
   }
@@ -129,6 +131,10 @@ class Board {
     const cardCount = this.element.querySelector('.board__card-count');
     cardCount.innerHTML = this.cards.length;
     const boardBody = this.element.querySelector('.board__body');
+    const cardNodes = boardBody.querySelectorAll('.card');
+    if (cardNodes.length === this.cards.length) {
+      return;
+    }
     boardBody.insertAdjacentElement(
       'afterbegin',
       new Card(this.cards[0]).render(),
@@ -214,6 +220,7 @@ class Board {
         target.insertAdjacentElement('afterend', draggedCard);
       }
     } else if (event.target.closest('.board')) {
+      event.preventDefault();
       const target = event.target.closest('.board');
       const { draggedCard } = cardStore.getState();
       target.querySelector('.board__body').appendChild(draggedCard);
@@ -225,29 +232,75 @@ class Board {
     this.element.style.opacity = '';
     event.dataTransfer.clearData('board-id');
     boardStore.dispatch(createAction('ACTION_DROP_DRAGGED_BOARD'));
-    //   const { previousSibling } = this.element;
-    //   const previousBoardId = !!previousSibling
-    //     ? previousSibling.dataset.boardId
-    //     : null;
-    //   const uri = `/api/boards`;
-    //   const body = {
-    //     previousBoardId,
-    //     id: this.id,
-    //   };
-    //   try {
-    //     const response = await fetch(uri, {
-    //       method: 'PATCH',
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //       },
-    //       body: JSON.stringify(body),
-    //     });
-    //     if (!response.ok) {
-    //       throw new Error(message);
-    //     }
-    //   } catch {
-    //     alert('보드 위치를 업데이트하지 못했습니다.');
-    //   }
+  }
+
+  async dropHandler(event) {
+    if (![...event.dataTransfer.types].includes('card-id')) {
+      return;
+    }
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+
+    const { draggedCard } = cardStore.getState();
+    const parentBoard = draggedCard.closest('.board');
+
+    if (draggedCard.dataset.boardId !== parentBoard.dataset.boardId) {
+      const previousCardId = !!draggedCard.previousSibling
+        ? parseInt(draggedCard.previousSibling.dataset.cardId, 10)
+        : null;
+      const targetCardId = parseInt(draggedCard.dataset.cardId, 10);
+      const originBoardId = parseInt(draggedCard.dataset.boardId, 10);
+      const targetBoardId = parseInt(parentBoard.dataset.boardId, 10);
+      draggedCard.dataset.boardId = targetBoardId;
+      const uri = `/api/boards/${originBoardId}/cards/${targetCardId}/board`;
+      const body = {
+        previousCardId,
+        targetBoardId,
+      };
+      try {
+        const response = await fetch(uri, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(body),
+        });
+        const { message } = await response.json();
+        if (!response.ok) {
+          throw new Error(message);
+        }
+        cardStore.dispatch(
+          createAction('ACTION_CHANGE_BOARD', {
+            id: targetCardId,
+            boardId: targetBoardId,
+          }),
+        );
+      } catch {
+        alert('카드를 이동하지 못했습니다.');
+      }
+    } else {
+      const previousCardId = !!draggedCard.previousSibling
+        ? draggedCard.previousSibling.dataset.cardId
+        : null;
+      const { boardId, cardId } = draggedCard.dataset;
+      const uri = `/api/boards/${boardId}/cards/${cardId}/position`;
+      const body = { previousCardId };
+      try {
+        const response = await fetch(uri, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(body),
+        });
+        const { message } = await response.json();
+        if (!response.ok) {
+          throw new Error(message);
+        }
+      } catch {
+        alert('카드를 이동하지 못했습니다.');
+      }
+    }
   }
 }
 
