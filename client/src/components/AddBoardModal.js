@@ -24,7 +24,7 @@ class AddBoardModal {
             <img src=${CloseIcon} />
           </div>
         </div>
-        <form class='add-board-modal__body' for='name'>
+        <form class='add-board-modal__body' for='name' autocomplete='off'>
           <label class='add-board-modal__label'>Board name</label>
           <input
             id='name'

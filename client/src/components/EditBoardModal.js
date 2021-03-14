@@ -26,7 +26,7 @@ class EditBoardModal {
             <img src=${CloseIcon} />
           </div>
         </div>
-        <form class='edit-board-modal__body'>
+        <form class='edit-board-modal__body' autocomplete='off'>
           <label class='edit-board-modal__label' for='name'>Name</label>
           <input
             id='name'
