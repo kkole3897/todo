@@ -143,7 +143,8 @@ class Card {
     const getCardsQuery = `
       SELECT id, description, author, board_id boardId
       FROM card
-      WHERE board_id = ? AND deleted_at IS NULL;
+      WHERE board_id = ? AND deleted_at IS NULL
+      ORDER BY position ASC;
     `;
     const [rows] = await this.database.query(getCardsQuery, [boardId]);
     return rows.map(row => {
