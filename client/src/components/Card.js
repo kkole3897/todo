@@ -24,6 +24,7 @@ class Card {
     this.dragEndHandler = this.dragEndHandler.bind(this);
 
     cardStore.subscribe(this.updateDescription, this);
+    cardStore.subscribe(this.changeBoardId, this);
   }
 
   render() {
@@ -104,6 +105,7 @@ class Card {
         throw new Error(message);
       }
       cardStore.unsubscribe(this.updateDescription, this);
+      cardStore.unsubscribe(this.changeBoardId, this);
       cardStore.dispatch(createAction('ACTION_DELETE_CARD', { id: this.id }));
       this.element.remove();
     } catch {
@@ -126,6 +128,17 @@ class Card {
     this.element.style.opacity = '';
     event.dataTransfer.clearData('card-id');
     cardStore.dispatch(createAction('ACTION_DROP_DRAGGED_CARD'));
+  }
+
+  changeBoardId() {
+    const [card] = cardStore
+      .getState()
+      .cards.filter(card => card.id === this.id);
+    if (card.boardId === this.boardId) {
+      return;
+    }
+    this.boardId = card.boardId;
+    this.element.dataset.boardId = this.boardId;
   }
 }
 

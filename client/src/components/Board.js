@@ -191,6 +191,8 @@ class Board {
         throw new Error(message);
       }
       boardStore.unsubscribe(this.updateName, this);
+      cardStore.unsubscribe(this.createNewCard, this);
+      cardStore.unsubscribe(this.deleteCard, this);
       boardStore.dispatch(createAction('ACTION_DELETE_BOARD', { id: this.id }));
       this.element.remove();
     } catch {
@@ -252,7 +254,6 @@ class Board {
       const targetCardId = parseInt(draggedCard.dataset.cardId, 10);
       const originBoardId = parseInt(draggedCard.dataset.boardId, 10);
       const targetBoardId = parseInt(parentBoard.dataset.boardId, 10);
-      draggedCard.dataset.boardId = targetBoardId;
       const uri = `/api/boards/${originBoardId}/cards/${targetCardId}/board`;
       const body = {
         previousCardId,
