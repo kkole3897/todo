@@ -33,7 +33,7 @@ class EditBoardModal {
             class='edit-board-modal__text-input edit-board-modal__text-input--m'
             type='text'
             name='name'
-            value=${this.text}
+            value='${this.text}'
           />
           <button class='edit-board-modal__save-button edit-board-modal__save-button--mt'>
             Save
