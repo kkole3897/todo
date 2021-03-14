@@ -74,7 +74,8 @@ class Card {
       boardId: this.boardId,
       cardId: this.id,
     });
-    this.element.appendChild(editCardModal.render());
+    const root = document.getElementById('root');
+    root.appendChild(editCardModal.render());
   }
 
   updateDescription() {
