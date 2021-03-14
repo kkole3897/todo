@@ -156,7 +156,8 @@ class Board {
   }
 
   openEditModal() {
-    this.element.appendChild(
+    this.element.insertAdjacentElement(
+      'beforebegin',
       new EditBoardModal({
         text: this.name,
         boardId: this.id,
