@@ -19,8 +19,9 @@ class AddCardForm {
 
   render() {
     this.element.className = 'add-card-form add-card-form--m';
+    this.element.setAttribute('draggable', true);
     this.element.innerHTML = `
-      <textarea class='add-card-form__textarea'></textarea>
+      <textarea class='add-card-form__textarea' placeholder='Enter a note'></textarea>
       <div class='add-card-form__button-container add-card-form__button-container--m'>
         <button 
           class='add-card-form__add-button add-card-form__add-button--mr' 
@@ -35,6 +36,10 @@ class AddCardForm {
     this.element.addEventListener('input', this.inputTextAreaHandler);
     this.element.addEventListener('click', this.clickCancelButtonHandler);
     this.element.addEventListener('submit', this.submitAddCardHandler);
+    this.element.addEventListener('dragstart', event => {
+      event.preventDefault();
+      event.stopPropagation();
+    });
 
     return this.element;
   }
