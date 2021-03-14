@@ -17,6 +17,7 @@ class BoardContainer {
     this.dropHandler = this.dropHandler.bind(this);
 
     boardStore.subscribe(this.createNewBoard, this);
+    boardStore.subscribe(this.deleteBoard, this);
   }
 
   render() {
@@ -106,6 +107,14 @@ class BoardContainer {
     } catch {
       alert('보드를 이동하지 못 했습니다.');
     }
+  }
+
+  deleteBoard() {
+    const { boards } = boardStore.getState();
+    if (this.boards <= boards) {
+      return;
+    }
+    this.boards = boards;
   }
 }
 
