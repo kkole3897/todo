@@ -13,6 +13,7 @@ class BoardContainer {
     this.clickAddBoardButtonHandler = this.clickAddBoardButtonHandler.bind(
       this,
     );
+    this.dragOverHandler = this.dragOverHandler.bind(this);
     this.dropHandler = this.dropHandler.bind(this);
 
     boardStore.subscribe(this.createNewBoard, this);
@@ -57,15 +58,20 @@ class BoardContainer {
   }
 
   dragOverHandler(event) {
-    event.preventDefault();
-    event.dataTransfer.dropEffect = 'move';
-    if (!event.target.closest('.board')) {
+    event.stopPropagation();
+    if (
+      !(
+        event.target.closest('.board') &&
+        [...event.dataTransfer.types].includes('board-id')
+      )
+    ) {
       return;
     }
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
     const target = event.target.closest('.board');
-    const { nextSibling } = target;
     const { draggedBoard } = boardStore.getState();
-    if (nextSibling === draggedBoard) {
+    if (target.nextSibling === draggedBoard) {
       target.insertAdjacentElement('beforebegin', draggedBoard);
     } else {
       target.insertAdjacentElement('afterend', draggedBoard);
@@ -73,7 +79,12 @@ class BoardContainer {
   }
 
   dropHandler(event) {
+    event.stopPropagation();
+    if (![...event.dataTransfer.types].includes('board-id')) {
+      return;
+    }
     event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
   }
 }
 

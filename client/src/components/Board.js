@@ -31,6 +31,7 @@ class Board {
     this.deleteBoard = this.deleteBoard.bind(this);
     this.dragStartHandler = this.dragStartHandler.bind(this);
     this.dragEndHandler = this.dragEndHandler.bind(this);
+    this.dragOverHandler = this.dragOverHandler.bind(this);
 
     cardStore.subscribe(this.createNewCard, this);
     cardStore.subscribe(this.deleteCard, this);
@@ -38,6 +39,7 @@ class Board {
   }
 
   render() {
+    this.element.id = `board-${this.id}`;
     this.element.className = 'board board--mr';
     this.element.dataset.boardId = this.id;
     this.element.setAttribute('draggable', true);
@@ -71,6 +73,7 @@ class Board {
     this.element.addEventListener('click', this.clickMorebuttonHandler);
     this.element.addEventListener('dragstart', this.dragStartHandler);
     this.element.addEventListener('dragend', this.dragEndHandler);
+    this.element.addEventListener('dragover', this.dragOverHandler);
 
     return this.element;
   }
@@ -188,39 +191,63 @@ class Board {
     }
   }
 
-  dragStartHandler() {
+  dragStartHandler(event) {
+    event.stopPropagation();
     this.element.style.opacity = 0.5;
+    event.dataTransfer.setData('board-id', this.element.id);
+    event.dataTransfer.effectAllowed = 'move';
     boardStore.dispatch(
       createAction('ACTION_GRAB_DRAGGED_BOARD', { draggedBoard: this.element }),
     );
   }
 
-  async dragEndHandler() {
-    this.element.style.opacity = '';
-    boardStore.dispatch(createAction('ACTION_DROP_DRAGGED_BOARD'));
-    const { previousSibling } = this.element;
-    const previousBoardId = !!previousSibling
-      ? previousSibling.dataset.boardId
-      : null;
-    const uri = `/api/boards`;
-    const body = {
-      previousBoardId,
-      id: this.id,
-    };
-    try {
-      const response = await fetch(uri, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
-      });
-      if (!response.ok) {
-        throw new Error(message);
+  dragOverHandler(event) {
+    if (![...event.dataTransfer.types].includes('card-id')) {
+      return;
+    } else if (event.target.closest('.card')) {
+      event.preventDefault();
+      const target = event.target.closest('.card');
+      const { draggedCard } = cardStore.getState();
+      if (target.nextSibling === draggedCard) {
+        target.insertAdjacentElement('beforebegin', draggedCard);
+      } else {
+        target.insertAdjacentElement('afterend', draggedCard);
       }
-    } catch {
-      alert('보드 위치를 업데이트하지 못했습니다.');
+    } else if (event.target.closest('.board')) {
+      const target = event.target.closest('.board');
+      const { draggedCard } = cardStore.getState();
+      target.querySelector('.board__body').appendChild(draggedCard);
     }
+  }
+
+  async dragEndHandler(event) {
+    event.stopPropagation();
+    this.element.style.opacity = '';
+    event.dataTransfer.clearData('board-id');
+    boardStore.dispatch(createAction('ACTION_DROP_DRAGGED_BOARD'));
+    //   const { previousSibling } = this.element;
+    //   const previousBoardId = !!previousSibling
+    //     ? previousSibling.dataset.boardId
+    //     : null;
+    //   const uri = `/api/boards`;
+    //   const body = {
+    //     previousBoardId,
+    //     id: this.id,
+    //   };
+    //   try {
+    //     const response = await fetch(uri, {
+    //       method: 'PATCH',
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //       },
+    //       body: JSON.stringify(body),
+    //     });
+    //     if (!response.ok) {
+    //       throw new Error(message);
+    //     }
+    //   } catch {
+    //     alert('보드 위치를 업데이트하지 못했습니다.');
+    //   }
   }
 }
 

@@ -20,14 +20,18 @@ class Card {
     this.clickMoreButtonHandler = this.clickMoreButtonHandler.bind(this);
     this.openEditModal = this.openEditModal.bind(this);
     this.deleteCard = this.deleteCard.bind(this);
+    this.dragStartHandler = this.dragStartHandler.bind(this);
+    this.dragEndHandler = this.dragEndHandler.bind(this);
 
     cardStore.subscribe(this.updateDescription, this);
   }
 
   render() {
+    this.element.id = `card-${this.id}`;
     this.element.className = 'card card--my';
     this.element.dataset.cardId = this.id;
     this.element.dataset.boardId = this.boardId;
+    this.element.setAttribute('draggable', true);
 
     this.element.innerHTML = `
       <div class='card__inner--relative'>
@@ -45,6 +49,8 @@ class Card {
     `;
 
     this.element.addEventListener('click', this.clickMoreButtonHandler);
+    this.element.addEventListener('dragstart', this.dragStartHandler);
+    this.element.addEventListener('dragend', this.dragEndHandler);
 
     return this.element;
   }
@@ -102,6 +108,23 @@ class Card {
     } catch {
       alert('카드 삭제 실패');
     }
+  }
+
+  dragStartHandler(event) {
+    event.stopPropagation();
+    this.element.style.opacity = 0.5;
+    event.dataTransfer.setData('card-id', this.element.id);
+    event.dataTransfer.effectAllowed = 'move';
+    cardStore.dispatch(
+      createAction('ACTION_GRAB_DRAGGED_CARD', { draggedCard: this.element }),
+    );
+  }
+
+  dragEndHandler(event) {
+    event.stopPropagation();
+    this.element.style.opacity = '';
+    event.dataTransfer.clearData('card-id');
+    cardStore.dispatch(createAction('ACTION_DROP_DRAGGED_CARD'));
   }
 }
 
