@@ -7,6 +7,7 @@ const ACTION_UPDATE_DESCRIPTION = 'ACTION_UPDATE_DESCRIPTION';
 const ACTION_DELETE_CARD = 'ACTION_DELETE_CARD';
 const ACTION_GRAB_DRAGGED_CARD = 'ACTION_GRAB_DRAGGED_CARD';
 const ACTION_DROP_DRAGGED_CARD = 'ACTION_DROP_DRAGGED_CARD';
+const ACTION_CHANGE_BOARD = 'ACTION_CHANGE_BOARD';
 
 function reducer(state = {}, { type, payload }) {
   switch (type) {
@@ -48,6 +49,14 @@ function reducer(state = {}, { type, payload }) {
         ...state,
         draggedCard: null,
       };
+    case ACTION_CHANGE_BOARD:
+      return {
+        ...state,
+        cards: changeBoard(state.cards, {
+          id: payload.id,
+          boardId: payload.boardId,
+        }),
+      };
     default:
       return {
         ...state,
@@ -66,6 +75,15 @@ function updateDescription(cards, { id, description }) {
 
 function deleteCard(cards, id) {
   return cards.filter(card => card.id !== id);
+}
+
+function changeBoard(cards, { id, boardId }) {
+  return cards.map(card => {
+    if (card.id === id) {
+      card.boardId = boardId;
+    }
+    return card;
+  });
 }
 
 const cardStore = createStore({
