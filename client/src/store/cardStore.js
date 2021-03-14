@@ -5,6 +5,8 @@ const ACTION_ADD_CARDS = 'ACTION_ADD_CARDS';
 const ACTION_ADD_CARD = 'ACTION_ADD_CARD';
 const ACTION_UPDATE_DESCRIPTION = 'ACTION_UPDATE_DESCRIPTION';
 const ACTION_DELETE_CARD = 'ACTION_DELETE_CARD';
+const ACTION_GRAB_DRAGGED_CARD = 'ACTION_GRAB_DRAGGED_CARD';
+const ACTION_DROP_DRAGGED_CARD = 'ACTION_DROP_DRAGGED_CARD';
 
 function reducer(state = {}, { type, payload }) {
   switch (type) {
@@ -36,6 +38,16 @@ function reducer(state = {}, { type, payload }) {
         ...state,
         cards: deleteCard(state.cards, payload.id),
       };
+    case ACTION_GRAB_DRAGGED_CARD:
+      return {
+        ...state,
+        draggedCard: payload.draggedCard,
+      };
+    case ACTION_DROP_DRAGGED_CARD:
+      return {
+        ...state,
+        draggedCard: null,
+      };
     default:
       return {
         ...state,
@@ -56,6 +68,9 @@ function deleteCard(cards, id) {
   return cards.filter(card => card.id !== id);
 }
 
-const cardStore = createStore({ initialState: { cards: [] }, reducer });
+const cardStore = createStore({
+  initialState: { cards: [], draggedCard: null },
+  reducer,
+});
 
 export default cardStore;
